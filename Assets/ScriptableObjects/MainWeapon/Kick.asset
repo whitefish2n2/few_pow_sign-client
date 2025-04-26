@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3f0e59d8d430c347bc7a05cad52b56e, type: 3}
+  m_Name: Kick
+  m_EditorClassIdentifier: 
+  weaponName: 1
+  headDamage: 100
+  lagDamage: 30
+  bodyDamage: 30
+  maxAmmo: 7
+  termToShot: 0.8
+  thirdPovObjectPrefab: {fileID: 3987286390292732243, guid: 36245e23180b2864696c96104058c482, type: 3}
+  handleObjectPrefab: {fileID: 3987286390292732243, guid: 36245e23180b2864696c96104058c482, type: 3}
+  shotSound: {fileID: 0}
+  handlePosition: {x: 0.4640045, y: -0.4020001, z: 0.7789993}
+  handleObjectRotation: {x: 0, y: -90, z: 0}
+  thirdPovObjectPosition: {x: 0.4640045, y: -0.4020001, z: 0.7789993}
+  thirdPovObjectRotation: {x: 0, y: -90, z: 0}
+  type: 1
+  interactHighlightColor: {r: 0.21702574, g: 0.8037735, b: 0, a: 0.5686275}
