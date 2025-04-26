@@ -2,6 +2,12 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
+
+# add from fish
+*.blend
+*.zip
+# there is too many big .zip file so i ignore it
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -45,7 +51,6 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
-*.blend
 
 # Unity3D generated meta files
 *.pidb.meta
