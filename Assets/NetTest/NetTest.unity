@@ -612,7 +612,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1192462052}
         m_TargetAssemblyTypeName: NetTest.MatchSkeleton, Assembly-CSharp
-        m_MethodName: Close
+        m_MethodName: Cancel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -693,6 +693,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   websocketUrl: ws://localhost:8080
+  modeIndex: 2
 --- !u!114 &1192462053
 MonoBehaviour:
   m_ObjectHideFlags: 0

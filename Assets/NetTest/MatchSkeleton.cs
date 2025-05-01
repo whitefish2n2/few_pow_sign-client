@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using NativeWebSocket;
 using System.Text;
+using NetCode;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -12,13 +13,14 @@ namespace NetTest
     public class MatchSkeleton : MonoBehaviour
     {
         [SerializeField] private string websocketUrl;
+        [SerializeField] private int modeIndex;
         private WebSocket websocket;
 
         public async void Click()
         {
             try
             {
-                string url = $"{websocketUrl}/match-wait?token={NetTestStatic.instance.jwt}";
+                string url = $"{websocketUrl}/match-wait?token={NetTestStatic.instance.jwt}&userId={NetTestStatic.instance.authId}&gameMode={modeIndex}";
                 websocket = new WebSocket(url);
 
                 websocket.OnOpen += async () =>
@@ -54,9 +56,9 @@ namespace NetTest
                 websocket.DispatchMessageQueue();
         }
 
-        public async void Close()
+        public async void Cancel()
         {
-            await websocket.Close();
+            await websocket.SendText(JsonUtility.ToJson(new WsEventDto{Type = WsEventType.Cancel.ToString(),Message = ""}));
         }
     }
 }
