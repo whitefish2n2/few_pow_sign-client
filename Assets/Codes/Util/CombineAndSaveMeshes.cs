@@ -8,7 +8,7 @@ public class CombineAndSaveMeshes : MonoBehaviour
     {
         GameObject selected = Selection.activeGameObject;
         var selectedFile = Selection.activeObject;
-        if (selected == null)
+        if (!selected)
         {
             Debug.LogError("No game object selected.");
             return;

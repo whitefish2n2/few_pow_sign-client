@@ -19,6 +19,10 @@ public class NetTestStatic : MonoBehaviour
     [ReadOnly] public string clientId;
     [ReadOnly] public string clientSecret;
     [ReadOnly] public string username;
+    [ReadOnly] public UInt64 userPrivateKey;
+    [ReadOnly] public sbyte userPublicKey;
+    [ReadOnly] public string sessionConnectToken;
+    [ReadOnly] public string sessionKey;
 
     public string dedicatedBaseUrl;
     public string dedicatedPort;

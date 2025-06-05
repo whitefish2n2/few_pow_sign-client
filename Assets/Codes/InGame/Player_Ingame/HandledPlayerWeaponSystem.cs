@@ -33,7 +33,7 @@ namespace Codes.InGame.Player_Ingame
         }
         
         
-        public void Swap(bool up)
+        public override void Swap(bool up)
         {
             var r =SwapWeapon(up);
             if (r is null) return;
@@ -42,7 +42,7 @@ namespace Codes.InGame.Player_Ingame
             WeaponHold();
             holdingWeaponType = r.stat.type;
         }
-        public void Swap(int idx)
+        public override void Swap(int idx)
         {
             var r = weapons[idx];
             if (r is null) return;

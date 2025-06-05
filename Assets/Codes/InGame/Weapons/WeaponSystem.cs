@@ -20,11 +20,16 @@ namespace Codes.InGame.Weapons
         {
             ParentPlayer = GetComponent<Player>();
         }
-        public void Swap(bool dir)
+        public virtual void Swap(bool dir)
         {
             var r =SwapWeapon(dir);
             if (r is null) return;
             holdingWeapon = r;
+        }
+
+        public virtual void Swap(int idx)
+        {
+            
         }
         private Weapon SwapWeapon(bool dir)
         {
