@@ -10,7 +10,7 @@ namespace Codes.OutGame.Modal
         [SerializeField] private TextMeshProUGUI errorCodeUGUI;
         [SerializeField] private TextMeshProUGUI errorBodyUGUI;
         private CanvasGroup modalCanvasGroup;
-        public void Alert(ErrorResponse response, Action onRetry)
+        public void Alert(ErrorResponse response)
         {
             gameObject.SetActive(true);
             errorCodeUGUI.text = response.code.ToString();

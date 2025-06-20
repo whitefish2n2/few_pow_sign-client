@@ -19,11 +19,14 @@ namespace Codes.OutGame
     
         [SerializeField] private GameObject loadBackground;
         private Animator loadAnimator;
+        
+        
+        private static readonly int SpinAnim = Animator.StringToHash("DoSpin");
     
         protected override void Initialize()
         {
             fadeCanvasGroup = fadeBackground.GetComponent<CanvasGroup>();
-            spinnerCanvasGroup = spinnerObject.GetComponent<CanvasGroup>();
+            spinnerCanvasGroup = spinnerBackground.GetComponent<CanvasGroup>();
             spinnerAnimator = spinnerObject.GetComponent<Animator>();
             //loadAnimator= loadBackground.GetComponent<Animator>();
         }
@@ -40,6 +43,12 @@ namespace Codes.OutGame
                 .OnComplete(()=> fadeBackground.SetActive(false));
         }
 
+        public async Task FadeInAsync(float insert, Task task, float outsert)
+        {
+            FadeIn(insert);
+            await task;
+            FadeOut(outsert);
+        }
         public void DoFade(float insert, float wait, float outsert)
         {
             Sequence seq = DOTween.Sequence();
@@ -54,11 +63,13 @@ namespace Codes.OutGame
         public void SpinningIn(float insert)
         {
             spinnerBackground.SetActive(true);
+            spinnerAnimator.SetBool(SpinAnim,true);
             spinnerCanvasGroup.DOFade(1, insert);
         }
 
         public void SpinningOut(float insert)
         {
+            spinnerAnimator.SetBool(SpinAnim,false);
             spinnerCanvasGroup.DOFade(0, insert)
                 .OnComplete(() => spinnerBackground.SetActive(false));
         }

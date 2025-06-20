@@ -14,24 +14,28 @@ public class AlertManager : MonoSingleton<AlertManager>
 {
     [SerializeField] private GameObject retryableErrorModal;
     [SerializeField] private GameObject defaultErrorModal;
+    [SerializeField] private GameObject defaultAlertModal;
 
     protected override void Initialize()
     { }
 
-    public void AlertError(ErrorResponse response, Action onRetry)
+    public void AlertError(ErrorResponse response)
     {
-        if (!defaultErrorModal) return;
-        var modal = Instantiate(defaultErrorModal);
-        RetryableErrorModal retryableErrorModalCode = modal.GetComponent<RetryableErrorModal>();;
-        retryableErrorModalCode.Alert(response, onRetry);
+        var modal = Instantiate(defaultErrorModal, gameObject.transform, false);
+        DefaultErrorModal modalCode = modal.GetComponent<DefaultErrorModal>();;
+        modalCode.Alert(response);
     }
     
-    public void AlertRetryableError(ErrorResponse response, Action onRetry)
+    public void AlertRetryableError(ErrorResponse response, Action onAlertClose = null)
     {
-        if (!retryableErrorModal) return;
-        var modal = Instantiate(retryableErrorModal);
+        var modal = Instantiate(retryableErrorModal,gameObject.transform, false);
         RetryableErrorModal retryableErrorModalCode = modal.GetComponent<RetryableErrorModal>();;
-        retryableErrorModalCode.Alert(response, onRetry);
+        retryableErrorModalCode.Alert(response, onAlertClose);
+    }
+
+    public void Alert(string message, Action onClose = null)
+    {
+        
     }
     
 }

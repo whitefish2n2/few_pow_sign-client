@@ -1,42 +1,119 @@
 using System.Threading.Tasks;
+using Codes.FileIO;
+using Codes.Util;
 using NetTest;
 using NetTest.Dto;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Codes.OutGame.LoginUi
 {
-    public class LoginUiManager : MonoBehaviour
+    public class LoginUiManager : MonoBungleton<LoginUiManager>
     {
-        public static LoginUiManager instance;
+        [SerializeField] SignInForm signInForm;
+        [SerializeField]SignUpForm signUpForm;
+        //Log in
 
-        private void Awake()
+        protected override void Initialize()
         {
-            instance = this;
+            if (signInForm == null || signUpForm == null)
+            {
+                Debug.LogError("LoginUiManager: signInForm, signUpForm Is Null");
+            }
+
+            TryAutoLogin();
         }
 
-
-        private void LoginComplete(SignInResponseDto response)
+        private async Task TryAutoLogin()
         {
-            
+            //todo: auto login 여부 확인
+            var token = TokenIO.LoadToken();
+            if (token == null) return;
+            await RequestClient.Instance.SignInWithRefreshToken(OnSigninComplete,
+                (e) => {Debug.LogError(e.code+" : "+e.message); },
+                () => { },
+                new SignInWithRefreshDto(token.refreshToken));
+        }
+        private void OnSigninComplete(ApiResponse<SignInResponseDto> response)
+        {
+            ClientStatic.Instance.jwt = response.data.Jwt;
+            ClientStatic.Instance.refreshToken = response.data.RefreshToken;
+            TokenIO.SaveToken(response.data.Jwt,response.data.RefreshToken);
+            SceneManager.LoadScene("Scenes/OutgameSkeleton");
         }
 
-        private void LoginFailed(ErrorResponse errorResponse)
+        private void OnSigninFailed(ErrorResponse errorResponse)
         {
-            
+            if (errorResponse.code is (int)ExceptionCode.PlayerNotFoundException or (int)ExceptionCode.LoginNotRegisteredIdException)
+            {
+                signInForm.InvalidId();
+            }
+            else if (errorResponse.code is (int)ExceptionCode.LoginPasswordNotMatchedException)
+            {
+                signInForm.InvalidPassword();
+            }
+            else
+            {
+                AlertManager.Instance.AlertRetryableError(errorResponse);
+            }
         }
 
-        private void LoginTimeout()
+        public SignInDto tempSignInInfo;
+        private void OnSigninTimeout()
         {
-            
+            AlertManager.Instance.AlertRetryableError(ErrorResponse.ServerTimeout, async () => { await SignIn(tempSignInInfo);} );
         }
-        public void Login(SignInDto signInDto)
+        public async Task SignIn(SignInDto signInDto)
         {
-            var r = HttpRequestClient.Instance.SignIn(LoginComplete,LoginFailed,LoginTimeout, signInDto);
+            tempSignInInfo = signInDto;
+            var task = RequestClient.Instance.SignIn(OnSigninComplete,OnSigninFailed,OnSigninTimeout, signInDto);
+            await UIEventManager.Instance.SpinningInAsync(0.1f, task, 0.1f);
         }
-    
-        private void OnDestroy()
+        
+        //Sign Up
+        public SignUpDto tempSignUpInfo;
+        private void OnSignUpComplete(ApiResponse<SignInResponseDto> response)
         {
-            instance = null;
+            ClientStatic.Instance.jwt = response.data.Jwt;
+            ClientStatic.Instance.refreshToken = response.data.RefreshToken;
+            SceneManager.LoadScene("Scenes/OutgameSkeleton");
+        }
+        private void OnSignUpFailed(ErrorResponse errorResponse)
+        {
+            if (errorResponse.code is (int)ExceptionCode.AlreadyExistsIdException)
+            {
+                signUpForm.AlreadyExistsId();
+            }
+            else
+            {
+                AlertManager.Instance.AlertRetryableError(errorResponse);
+            }
+        }
+
+        private void OnSignUpTimeout()
+        {
+            AlertManager.Instance.AlertRetryableError(ErrorResponse.ServerTimeout, async () => { await SignUp(tempSignUpInfo);} );
+        }
+        public async Task SignUp(SignUpDto signUpDto)
+        {
+            tempSignUpInfo = signUpDto;
+            var task = RequestClient.Instance.SignUp(OnSignUpComplete, OnSignUpFailed, OnSignUpTimeout, signUpDto);
+            await UIEventManager.Instance.SpinningInAsync(0.1f, task, 0.1f);
+            return;
+        }
+
+        [SerializeField] private GameObject signInCanvas;
+        [SerializeField] private GameObject signUpCanvas;
+        public void ChangeToSignInWindow()
+        {
+            signInCanvas.SetActive(true);
+            signUpCanvas.SetActive(false);
+        }
+
+        public void ChangeToSignUpWindow()
+        {
+            signInCanvas.SetActive(false);
+            signUpCanvas.SetActive(true);
         }
     
     }

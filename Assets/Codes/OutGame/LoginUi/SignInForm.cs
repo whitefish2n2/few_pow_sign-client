@@ -1,20 +1,32 @@
 using NetTest;
 using NetTest.Dto;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Codes.OutGame.LoginUi
 {
     public class SignInForm : MonoBehaviour
     {
-        [SerializeField] private string id;
-        [SerializeField] private string password;
+        
+        [SerializeField] private TmpInputFieldInterface id;
+        [SerializeField] private TmpInputFieldInterface password;
 
-        public void Apply()
+        public async void Apply()
         {
             SignInDto signDto = new SignInDto();
-            signDto.ID = id;
-            signDto.Password = password;
-            //HttpRequestClient.Instance.SignIn();
+            signDto.ID = id.tmpInputField.text;
+            signDto.Password = password.tmpInputField.text; ;
+            await LoginUiManager.Instance.SignIn(signDto);
+        }
+
+        public void InvalidId()
+        {
+            id.WrongInput("User Not Found.");
+        }
+
+        public void InvalidPassword()
+        {
+            password.WrongInput("Wrong Password.");
         }
     }
 }

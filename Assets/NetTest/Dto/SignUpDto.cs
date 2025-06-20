@@ -5,12 +5,11 @@ namespace NetTest.Dto
     public class SignUpDto
     {
         [JsonProperty("id")]
-        public string ID = NetTestStatic.instance.authId;
+        public string ID;
         
         [JsonProperty("password")]
-        public string Password = NetTestStatic.instance.authPassword;
-        
-        [JsonProperty("name")]
-        public string Name = NetTestStatic.instance.authName;
+        public string Password;
+
+        [JsonProperty("name")] public string Name;
     }
 }

@@ -10,6 +10,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 namespace NetTest
 {
+    
     public class MatchSkeleton : MonoBehaviour
     {
         [SerializeField] private string websocketUrl;

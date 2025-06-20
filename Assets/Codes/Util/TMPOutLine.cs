@@ -6,13 +6,17 @@ public class TMPOutLine : MonoBehaviour
 {
     private TextMeshProUGUI textMeshProUGUI;
     [SerializeField] private Color color;
-    [SerializeField] private float width;
+    [Range(0,1)] [SerializeField] private float width;
     
     private void Awake()
     {
         if (!textMeshProUGUI)
             TryGetComponent(out textMeshProUGUI);
-        if (!textMeshProUGUI || !textMeshProUGUI.fontSharedMaterial) return;
+        if (!textMeshProUGUI || !textMeshProUGUI.fontSharedMaterial)
+        {
+            Debug.LogError("TMPOutLine : No TMPOutLine component attached");
+            return;
+        }
         textMeshProUGUI.outlineColor = color;
         textMeshProUGUI.outlineWidth= width;
     }
@@ -30,16 +34,25 @@ public class TMPOutLine : MonoBehaviour
             };
 #endif
         }
+
+        if (component == null) return;
         textMeshProUGUI = component;
         textMeshProUGUI.outlineColor = color;
         textMeshProUGUI.outlineWidth = width;
     }
-    //private void On
+    
     private void OnValidate()
     {
         if (!textMeshProUGUI)
+        {
             TryGetComponent(out textMeshProUGUI);
-        if (!textMeshProUGUI || !textMeshProUGUI.fontSharedMaterial) return;
+        }
+
+        if (!textMeshProUGUI || !textMeshProUGUI.fontSharedMaterial)
+        {
+            return;
+        }
+
         textMeshProUGUI.outlineColor = color;
         textMeshProUGUI.outlineWidth= width;
     }
