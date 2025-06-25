@@ -9,6 +9,7 @@ using Codes;
 using Codes.InGame.Player_Ingame;
 using enet;
 using NetCode.ENetCode;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace NetTest
@@ -79,7 +80,7 @@ namespace NetTest
         
         public unsafe void SendAssignPacket(AssignRequestDto dto)
         {
-            var json = JsonUtility.ToJson(dto);
+            var json = JsonConvert.SerializeObject(dto);
             int maxBytes = Encoding.UTF8.GetMaxByteCount(json.Length);
             byte[] binary = ArrayPool<byte>.Shared.Rent(maxBytes);
             int binaryLength = Encoding.UTF8.GetBytes(json, 0, json.Length, binary, 0);

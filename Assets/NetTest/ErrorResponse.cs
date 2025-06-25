@@ -45,6 +45,8 @@ namespace NetTest
         public static ErrorResponse ServerNotFound = new ErrorResponse(-800, "서버를 찾지 못했습니다.");
 
         public static ErrorResponse TokenExpired = new ErrorResponse(-900, "로그인 기한이 만료되었습니다. 다시 로그인하여주세요.");
+        
+        public static ErrorResponse ValueGone = new ErrorResponse(-901, "플레이어 정보가 없습니다. 다시 로그인하여주세요.");
     }
 
     public enum ExceptionCode {

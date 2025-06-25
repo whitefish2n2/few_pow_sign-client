@@ -1616,6 +1616,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 1444139021155471714, guid: 0ccbeb6946924b54f80e99b2a43a6877, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3312147863680253928, guid: 0ccbeb6946924b54f80e99b2a43a6877, type: 3}
       propertyPath: m_LocalScale.x
       value: 137.05031

@@ -7,6 +7,7 @@ public class MatchModeSelectButton : MonoBehaviour
     [SerializeField] private GameMode currentGameMode;
     public void Click()
     {
-        MatchingManager.Instance.ChangeGameMode(currentGameMode);
+        if(MatchingUIManager.IsInitialized)
+            MatchingWsManager.Instance.ChangeGameMode(currentGameMode);
     }
 }

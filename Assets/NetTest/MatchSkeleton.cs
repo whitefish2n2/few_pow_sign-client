@@ -59,7 +59,7 @@ namespace NetTest
 
         public async void Cancel()
         {
-            await websocket.SendText(JsonUtility.ToJson(new WsEventDto{Type = WsEventType.Cancel.ToString(),Message = ""}));
+            await websocket.SendText(JsonConvert.SerializeObject(new WsEventDto{Type = WsEventType.Cancel,Message = ""}));
         }
     }
 }

@@ -12,6 +12,7 @@ using NetCode;
 using NetTest.Dto;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -55,6 +56,13 @@ namespace NetTest
             var url = new UrlBuilder(ClientStatic.Instance.MatchServerBaseUrl).SetPort(ClientStatic.Instance.MatchServerPort).SetEndPoint(endPoint).Build();
             await HandlePostRequest<ApiResponse<string>>(url, onSuccess,onFail,onTimeOut,dto,"RefreshJwt",15);
         }
+        public async Task RefreshJwt(Action<ApiResponse<string>> onSuccess, Action<ErrorResponse> onFail, Action onTimeOut)
+        {
+            var dto = new JwtRefreshDto(TokenHolder.instance.GetJwt(),TokenHolder.instance.GetRefreshToken());
+            const string endPoint = "/auth/refresh";
+            var url = new UrlBuilder(ClientStatic.Instance.MatchServerBaseUrl).SetPort(ClientStatic.Instance.MatchServerPort).SetEndPoint(endPoint).Build();
+            await HandlePostRequest<ApiResponse<string>>(url, onSuccess,onFail,onTimeOut,dto,"RefreshJwt",15);
+        }
         private async Task<bool> RefreshJwtInternal()
         {
             var dto = new JwtRefreshDto(TokenHolder.instance.GetJwt(), TokenHolder.instance.GetRefreshToken());
@@ -81,7 +89,7 @@ namespace NetTest
         /// </summary>
         /// <param name="gameModeIndex">게임 모드에요</param>
         /// <returns></returns>
-        public WebSocket Matching(int gameModeIndex)//Todo:Enum화
+        public WebSocket GetMatchWebsocket()//Todo:Enum화
         {
             const string endPoint = "/match-wait";
 
@@ -89,10 +97,7 @@ namespace NetTest
                 .SetPort(ClientStatic.Instance.MatchServerPort)
                 .SetEndPoint(endPoint)
                 .AddParam("token", TokenHolder.instance.GetJwt())
-                .AddParam("gameMode", gameModeIndex.ToString())
-                .Build();// $"{ClientStatic.Instance.MathcWebsocketBaseUrl}/match-wait?token={TokenHolder.instance.GetJwt()}&gameMode={gameModeIndex}";
-
-
+                .Build();// $"{ClientStatic.Instance.MatchWebsocketBaseUrl}/match-wait?token={TokenHolder.instance.GetJwt()}&gameMode={gameModeIndex}";
             return new NativeWebSocket.WebSocket(url);
         }
         

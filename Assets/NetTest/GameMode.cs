@@ -1,5 +1,9 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace NetTest
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum GameMode
     {
         DeathMatch = 0,

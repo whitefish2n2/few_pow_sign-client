@@ -30,7 +30,7 @@ namespace Codes.OutGame.LoginUi
             var token = TokenIO.LoadToken();
             if (token == null) return;
             await RequestClient.Instance.SignInWithRefreshToken(OnSigninComplete,
-                (e) => {Debug.LogError(e.code+" : "+e.message); },
+                (e) => {Debug.LogError(e.code+" : "+e.message);AlertManager.Instance.AlertRetryableError(e); },
                 () => { },
                 new SignInWithRefreshDto(token.refreshToken));
         }
@@ -76,6 +76,7 @@ namespace Codes.OutGame.LoginUi
         {
             ClientStatic.Instance.jwt = response.data.Jwt;
             ClientStatic.Instance.refreshToken = response.data.RefreshToken;
+            TokenIO.SaveToken(response.data.Jwt,response.data.RefreshToken);
             SceneManager.LoadScene("Scenes/OutgameSkeleton");
         }
         private void OnSignUpFailed(ErrorResponse errorResponse)
