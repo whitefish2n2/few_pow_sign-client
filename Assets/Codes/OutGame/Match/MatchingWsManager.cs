@@ -19,7 +19,9 @@ namespace Codes.OutGame.Match
         public event Action OnMatchCanceled;
 
         public event Action OnMatchEnqueueLoadingStarted;
-        public event Action OnMatchStarted;
+
+        public event Action<MatchFoundDto> OnMatchFound;
+        public event Action OnMatchMakingStarted;
 
         public event Action OnTimeout;
         
@@ -73,6 +75,19 @@ namespace Codes.OutGame.Match
             var success = await ConnectWithTimeout(ws,timeout);
             Debug.LogWarning(success);
             if(!success) OnMatchCanceled?.Invoke();
+            else
+            {
+                try
+                {
+                    matchingState = MatchingWebsocketState.Wait;
+                    Debug.Log("Matching Websocket Open!");
+                    await ws.SendText(JsonConvert.SerializeObject(WsEventDto.EnqueueMatch(currentGameMode)));
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                }
+            }
         }
 
         public void Cancel()
@@ -139,12 +154,14 @@ namespace Codes.OutGame.Match
                     case WsEventType.MatchFound:
                     {
                         var matchFoundDto = jToken.ToObject<MatchFoundDto>();
-                        matchingState = MatchingWebsocketState.Loading;
+                        OnMatchFound?.Invoke(matchFoundDto);
                         break;
                     }
                     case WsEventType.EnsureEnqueueMatch:
                     {
-                        OnMatchStarted?.Invoke();
+                        var ensureEnqueueDto = jToken.ToObject<EnsureMatchEnqueueDto>();
+                        MatchMakeStatic.Instance.userWebsocketKey = ensureEnqueueDto.key;
+                        OnMatchMakingStarted?.Invoke();
                         break;
                     }
                 }
@@ -207,16 +224,7 @@ namespace Codes.OutGame.Match
 
         private async void WsOpenHandler()
         {
-            try
-            {
-                matchingState = MatchingWebsocketState.Wait;
-                Debug.Log("Matching Websocket Open!");
-                await ws.SendText(JsonConvert.SerializeObject(WsEventDto.EnqueueMatch(currentGameMode)));
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
+            
         }
         
         async Task KeepAliveLoop(WebSocket websocket, int intervalSeconds, string indicator) {

@@ -8,7 +8,8 @@ namespace NetCode
     public class MatchFoundDto
     {
         public string gameId;
-        public string sessionConnectKey;
+        public string sessionVerifyKey;
+        public string sessionIndex;
         public string url;
         [JsonConverter(typeof(StringEnumConverter))]
         public MapEnum map;

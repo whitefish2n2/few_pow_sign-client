@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Plugins
@@ -47,10 +48,18 @@ namespace Plugins
             }
         }
 
+        protected virtual void Start()
+        {
+            LateInit();
+        }
+
         /// <summary>
         /// 초기화 코드 - Awake()에서 실행
         /// </summary>
         protected abstract void Initialize();
+
+        protected virtual void LateInit()
+        { }
 
         protected virtual void OnDestroy()
         {

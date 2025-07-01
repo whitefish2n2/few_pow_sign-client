@@ -25,11 +25,11 @@ namespace Codes.OutGame.Match
             //이벤트 구독
             MatchingWsManager.Instance.PrepareToNewMatch();
             MatchingWsManager.Instance.OnMatchCanceled += OnMatchCancelled;
-            MatchingWsManager.Instance.OnMatchStarted += OnMatchFound;
+            MatchingWsManager.Instance.OnMatchMakingStarted += OnMatchMakingFound;
             MatchingWsManager.Instance.OnTimeout += OnTimeout;
         }
 
-        private void OnMatchFound()
+        private void OnMatchMakingFound()
         {
             OnMatchFoundAction?.Invoke();
         }
@@ -63,7 +63,7 @@ namespace Codes.OutGame.Match
         protected override void OnDestroy()
         {
             MatchingWsManager.Instance. OnMatchCanceled -= OnMatchCancelled;
-            MatchingWsManager.Instance.OnMatchStarted -= OnMatchFound;
+            MatchingWsManager.Instance.OnMatchMakingStarted -= OnMatchMakingFound;
             base.OnDestroy();
         }
     }
