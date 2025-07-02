@@ -17,8 +17,7 @@ namespace NetTest
 
             if (TryGetToken(out var data))
             {
-                jwt = data.jwt;
-                refreshToken = data.refreshToken;
+                SetToken(data.jwt, data.refreshToken);
                 isLoaded = true;
                 Debug.Log("[TokenHolder] 토큰 로드 성공");
             }
@@ -40,13 +39,13 @@ namespace NetTest
             return refreshToken;
         }
 
-        public void SetToken(string jwt, string refresh)
+        public void SetToken(string newJwt, string newRefresh)
         {
-            this.jwt = jwt;
-            this.refreshToken = refresh;
+            jwt = newJwt;
+            refreshToken = newRefresh;
             isLoaded = true;
 
-            TokenIO.SaveToken(jwt,refresh);
+            TokenIO.SaveToken(newJwt,newRefresh);
         }
 
         public void Clear()

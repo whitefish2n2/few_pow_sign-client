@@ -19,6 +19,7 @@ namespace Codes.FileIO
             
             string json = JsonConvert.SerializeObject(tokenData);
             File.WriteAllText(tokenFilePath, json);
+            Debug.Log("New Jwt:" + newJwt);
             Debug.Log($"[TOKEN] 저장 완료: {tokenFilePath}");
         }
         

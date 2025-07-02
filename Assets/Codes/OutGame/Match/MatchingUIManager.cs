@@ -1,5 +1,6 @@
 using System;
 using Codes.Util;
+using NetCode;
 using NetTest;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,11 +26,11 @@ namespace Codes.OutGame.Match
             //이벤트 구독
             MatchingWsManager.Instance.PrepareToNewMatch();
             MatchingWsManager.Instance.OnMatchCanceled += OnMatchCancelled;
-            MatchingWsManager.Instance.OnMatchMakingStarted += OnMatchMakingFound;
+            MatchingWsManager.Instance.OnMatchFound += OnMatchFound;
             MatchingWsManager.Instance.OnTimeout += OnTimeout;
         }
 
-        private void OnMatchMakingFound()
+        private void OnMatchFound(MatchFoundDto matchFoundDto)
         {
             OnMatchFoundAction?.Invoke();
         }
@@ -62,8 +63,12 @@ namespace Codes.OutGame.Match
         }
         protected override void OnDestroy()
         {
-            MatchingWsManager.Instance. OnMatchCanceled -= OnMatchCancelled;
-            MatchingWsManager.Instance.OnMatchMakingStarted -= OnMatchMakingFound;
+            if (MatchingWsManager.IsInitialized)
+            {
+                MatchingWsManager.Instance.OnMatchCanceled -= OnMatchCancelled;
+                MatchingWsManager.Instance.OnMatchFound -= OnMatchFound;
+            }
+            
             base.OnDestroy();
         }
     }

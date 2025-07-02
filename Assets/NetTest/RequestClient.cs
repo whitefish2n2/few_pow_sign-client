@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using NativeWebSocket;
@@ -50,18 +51,65 @@ namespace NetTest
             await HandlePostRequest(url,onSuccess,onFail,onTimeOut,dto,"SignIn",15);
         }
 
-        public async Task RefreshJwt(JwtRefreshDto dto, Action<ApiResponse<string>> onSuccess, Action<ErrorResponse> onFail, Action onTimeOut)
+        public async Task<bool> ValidateToken(string jwt)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            const string endPoint = "/auth/validate-token";
+            var url = new UrlBuilder(ClientStatic.Instance.GetFullUrl()).SetEndPoint(endPoint).Build();
+
+            await HandleGetRequest<ApiResponse<bool>>(
+                url,
+                res => tcs.TrySetResult(true),
+                err => tcs.TrySetResult(false),
+                () => tcs.TrySetResult(false),
+                "Validate Token"
+            );
+
+            return await tcs.Task;
+        }
+        
+        private async Task RefreshJwt(JwtRefreshDto dto, Action<ApiResponse<string>> onSuccess, Action<ErrorResponse> onFail, Action onTimeOut)
         {
             const string endPoint = "/auth/refresh";
             var url = new UrlBuilder(ClientStatic.Instance.MatchServerBaseUrl).SetPort(ClientStatic.Instance.MatchServerPort).SetEndPoint(endPoint).Build();
             await HandlePostRequest<ApiResponse<string>>(url, onSuccess,onFail,onTimeOut,dto,"RefreshJwt",15);
         }
-        public async Task RefreshJwt(Action<ApiResponse<string>> onSuccess, Action<ErrorResponse> onFail, Action onTimeOut)
+        public async Task<bool> RefreshJwt()
         {
+            var tcs = new TaskCompletionSource<bool>();
             var dto = new JwtRefreshDto(TokenHolder.instance.GetJwt(),TokenHolder.instance.GetRefreshToken());
             const string endPoint = "/auth/refresh";
             var url = new UrlBuilder(ClientStatic.Instance.MatchServerBaseUrl).SetPort(ClientStatic.Instance.MatchServerPort).SetEndPoint(endPoint).Build();
-            await HandlePostRequest<ApiResponse<string>>(url, onSuccess,onFail,onTimeOut,dto,"RefreshJwt",15);
+            await HandlePostRequest<ApiResponse<string>>(url, 
+                (v)=>
+                {
+                    var newJwt = v.data;
+                    if (!string.IsNullOrEmpty(newJwt))
+                    {
+                        tcs.TrySetResult(true);
+                        Debug.LogWarning("JWT Refreshed:" + newJwt);
+                        TokenHolder.instance.SetToken(newJwt,TokenHolder.instance.GetRefreshToken());
+                    }
+                    else
+                    {
+                        OnTokenExpired(ErrorResponse.TokenExpired);
+                        tcs.TrySetResult(false);
+                    }
+                },
+                (e) =>
+                {
+                    OnTokenExpired(e);
+                    tcs.TrySetResult(false);
+                },
+                () =>
+                {
+                    tcs.TrySetResult(false);
+                },
+                dto,
+                "RefreshJwt",
+                15);
+            return await tcs.Task;
         }
         private async Task<bool> RefreshJwtInternal()
         {
@@ -89,7 +137,7 @@ namespace NetTest
         /// </summary>
         /// <param name="gameModeIndex">게임 모드에요</param>
         /// <returns></returns>
-        public WebSocket GetMatchWebsocket()//Todo:Enum화
+        public WebSocket GetMatchWebsocket()
         {
             const string endPoint = "/match-wait";
 
@@ -99,6 +147,16 @@ namespace NetTest
                 .AddParam("token", TokenHolder.instance.GetJwt())
                 .Build();// $"{ClientStatic.Instance.MatchWebsocketBaseUrl}/match-wait?token={TokenHolder.instance.GetJwt()}&gameMode={gameModeIndex}";
             return new NativeWebSocket.WebSocket(url);
+        }
+        public WebSocket GetMatchWebsocket(string token)
+        {
+            const string endPoint = "/match-wait";
+            string url = new UrlBuilder(ClientStatic.Instance.MatchWebsocketBaseUrl)
+                .SetPort(ClientStatic.Instance.MatchServerPort)
+                .SetEndPoint(endPoint)
+                .Build();// $"{ClientStatic.Instance.MatchWebsocketBaseUrl}/match-wait";
+            
+            return new NativeWebSocket.WebSocket(url, new Dictionary<string, string>{{"Authorization", "Bearer " + token}});
         }
         
         public async Task GetInventoryItem()
@@ -182,7 +240,6 @@ namespace NetTest
                 {
                     T res = JsonConvert.DeserializeObject<T>(responseBody);
                     onSuccess.Invoke(res);
-
                 }
                 else
                 {

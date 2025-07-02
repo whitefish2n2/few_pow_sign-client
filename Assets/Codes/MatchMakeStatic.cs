@@ -13,7 +13,9 @@ public class MatchMakeStatic : MonoSingleton<MatchMakeStatic>
     private List<NewPlayerDto> playerConstructor = new List<NewPlayerDto>();
     protected override void Start()
     {
+        //이벤트 구독
         MatchingWsManager.Instance.OnMatchFound += OnMatchFound;
+        MatchingWsManager.Instance.OnEnsureMatchEnqueue += OnMatchEnqueueEnsured;
     }
 
     private void OnMatchFound(MatchFoundDto matchFoundDto)

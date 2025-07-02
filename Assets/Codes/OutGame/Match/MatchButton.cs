@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using NetCode;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -17,10 +19,16 @@ namespace Codes.OutGame.Match
         {
             button = GetComponent<Button>();
             buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+        }
+
+        private void Start()
+        {
+            
             if (MatchingUIManager.IsInitialized)
             {
                 MatchingUIManager.Instance.OnMatchingStart += BeMatching;
                 MatchingUIManager.Instance.OnMatchCanceledAction += MatchCancel;
+                MatchingUIManager.Instance.OnMatchFoundAction += OnMatchFound;
             }
             
         }
@@ -65,6 +73,21 @@ namespace Codes.OutGame.Match
             currentCoroutine = null;
             buttonText.text = "Match";
             isMatching = false;
+        }
+
+        private void OnMatchFound()
+        {
+            if(currentCoroutine!=null) StopCoroutine(currentCoroutine);
+        }
+        private void OnDestroy()
+        {
+            if (MatchingUIManager.Instance)
+            {
+                MatchingUIManager.Instance.OnMatchingStart -= BeMatching;
+                MatchingUIManager.Instance.OnMatchCanceledAction -= MatchCancel;
+                MatchingUIManager.Instance.OnMatchFoundAction -= OnMatchFound;
+            }
+            
         }
     }
 }

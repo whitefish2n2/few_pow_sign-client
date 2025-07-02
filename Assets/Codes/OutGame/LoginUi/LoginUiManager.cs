@@ -36,9 +36,7 @@ namespace Codes.OutGame.LoginUi
         }
         private void OnSigninComplete(ApiResponse<SignInResponseDto> response)
         {
-            ClientStatic.Instance.jwt = response.data.Jwt;
-            ClientStatic.Instance.refreshToken = response.data.RefreshToken;
-            TokenIO.SaveToken(response.data.Jwt,response.data.RefreshToken);
+            TokenHolder.instance.SetToken(response.data.Jwt,response.data.RefreshToken);
             SceneManager.LoadScene("Scenes/OutgameSkeleton");
         }
 
@@ -74,9 +72,7 @@ namespace Codes.OutGame.LoginUi
         public SignUpDto tempSignUpInfo;
         private void OnSignUpComplete(ApiResponse<SignInResponseDto> response)
         {
-            ClientStatic.Instance.jwt = response.data.Jwt;
-            ClientStatic.Instance.refreshToken = response.data.RefreshToken;
-            TokenIO.SaveToken(response.data.Jwt,response.data.RefreshToken);
+            TokenHolder.instance.SetToken(response.data.Jwt,response.data.RefreshToken);
             SceneManager.LoadScene("Scenes/OutgameSkeleton");
         }
         private void OnSignUpFailed(ErrorResponse errorResponse)

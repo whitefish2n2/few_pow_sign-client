@@ -6,7 +6,7 @@ namespace Codes.InGame
 {
     public class MatchStatic : MonoBehaviour
     {
-        public Dictionary<int,Player> IngameUsers = new();
+        public Dictionary<int,Player> Players = new();
         
         public Dictionary<string,Mover> IngameMovers = new();
         private string score;
@@ -37,7 +37,7 @@ namespace Codes.InGame
         {
             try
             {
-                return IngameUsers[id];
+                return Players[id];
             }
             catch
             {

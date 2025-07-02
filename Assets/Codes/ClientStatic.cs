@@ -16,7 +16,7 @@ namespace Codes
         }
         
         public readonly string MatchWebsocketBaseUrl = "ws://localhost";
-        public readonly int MathcWebsocketPort = 8080;
+        public readonly int MatchWebsocketPort = 8080;
         
         public string authId;//todo: 굳이 static에 저장할필요 없을듯
         public string authPassword;
@@ -33,6 +33,8 @@ namespace Codes
 
         public string dedicatedBaseUrl;
         public string dedicatedPort;
+
+        public UInt16 sessionIndex;
 
     }
 }

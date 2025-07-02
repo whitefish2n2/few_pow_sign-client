@@ -10,6 +10,10 @@ namespace NetCode
         Ping,
         EnqueueMatch,
         
+        PickCharacter,
+        PickCharacterTemporary,
+        GetPickInformation,
+        
         //not use
         Cancel,
         
@@ -17,5 +21,7 @@ namespace NetCode
         Pong,
         MatchFound,
         EnsureEnqueueMatch,
+        NotifyCharacterChanged,
+        NotifyCharacterPicked,
     }
 }

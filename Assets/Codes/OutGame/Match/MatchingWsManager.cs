@@ -7,6 +7,7 @@ using NetTest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Plugins;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 namespace Codes.OutGame.Match
@@ -23,9 +24,13 @@ namespace Codes.OutGame.Match
         public event Action<MatchFoundDto> OnMatchFound;
         public event Action OnMatchMakingStarted;
 
+        public event Action<EnsureMatchEnqueueDto> OnEnsureMatchEnqueue;
+
         public event Action OnTimeout;
         
         private WebSocket ws = null;
+        private CancellationTokenSource keepAliveCts;//keep alive loop 끊기 위한 토큰
+        
         public MatchingWebsocketState matchingState = MatchingWebsocketState.Close;
         protected override void Initialize()
         {
@@ -62,11 +67,20 @@ namespace Codes.OutGame.Match
 
         public async Task Match(int timeout)
         {
+            bool isValidToken = await RequestClient.Instance.ValidateToken( TokenHolder.instance.GetJwt());
+            if (!isValidToken)
+            {
+                bool successRefresh = await RequestClient.Instance.RefreshJwt();
+                if (!successRefresh) {
+                    OnMatchCanceled?.Invoke();
+                return;
+                }
+            }
             OnMatchEnqueueLoadingStarted?.Invoke();
             
             matchingState = MatchingWebsocketState.Connecting;
             
-            ws = RequestClient.Instance.GetMatchWebsocket();
+            ws = RequestClient.Instance.GetMatchWebsocket(TokenHolder.instance.GetJwt());
             ws.OnOpen += WsOpenHandler;
             ws.OnMessage += WsMessageHandler;
             ws.OnClose += WsCloseHandler;
@@ -112,12 +126,10 @@ namespace Codes.OutGame.Match
             var cts = new CancellationTokenSource();
             var timeoutTask = Task.Delay(timeout*1000, cts.Token);
             ws.OnOpen += () => tcs.TrySetResult(true);
-            ws.OnError += (e) => tcs.TrySetResult(false);
-
+            ws.OnError += (e) => Debug.LogError(e);
             _ = ws.Connect();
     
             var finished = await Task.WhenAny(tcs.Task, timeoutTask);
-
             if (finished == timeoutTask)
             {
                 Debug.LogError("WebSocket connect timed out!");
@@ -128,7 +140,9 @@ namespace Codes.OutGame.Match
             {
                 cts.Cancel();
                 Debug.Log("WebSocket Connect Success!");
-                _ = KeepAliveLoop(ws, 5, "Match Ws Server");
+                
+                keepAliveCts = new CancellationTokenSource();
+                var o = KeepAliveLoop(ws, 5, "Match Ws Server",keepAliveCts.Token);
                 return true;
             }
 
@@ -160,8 +174,8 @@ namespace Codes.OutGame.Match
                     case WsEventType.EnsureEnqueueMatch:
                     {
                         var ensureEnqueueDto = jToken.ToObject<EnsureMatchEnqueueDto>();
-                        MatchMakeStatic.Instance.userWebsocketKey = ensureEnqueueDto.key;
                         OnMatchMakingStarted?.Invoke();
+                        OnEnsureMatchEnqueue?.Invoke(ensureEnqueueDto);
                         break;
                     }
                 }
@@ -189,18 +203,6 @@ namespace Codes.OutGame.Match
                         OnMatchCanceled?.Invoke();
                         break;
                     case WebSocketCloseCode.PolicyViolation:
-                        await RequestClient.Instance.RefreshJwt(s =>
-                            {
-                                TokenHolder.instance.SetToken(s.data, TokenHolder.instance.GetRefreshToken());
-                                OnMatchCanceled?.Invoke();
-                            },
-                            (e) =>
-                            {
-                                Debug.LogError("[MatchingManager.cs] : [Error While Refreshing Token]");
-                                ClientMonoStatic.Instance.HandleCriticalOrShouldLoginError(e);
-                            },
-                            () => { OnTimeout?.Invoke(); }
-                        );
                         break;
                     default:
                         break;
@@ -227,18 +229,29 @@ namespace Codes.OutGame.Match
             
         }
         
-        async Task KeepAliveLoop(WebSocket websocket, int intervalSeconds, string indicator) {
-            while (websocket.State == WebSocketState.Open) {
+        async Task KeepAliveLoop(WebSocket websocket, int intervalSeconds, string indicator,CancellationToken token) {
+            while (websocket.State == WebSocketState.Open &&  !token.IsCancellationRequested) {
                 try
                 {
                     Debug.Log($"Send Ping to {indicator}");
                     await websocket.SendText(JsonConvert.SerializeObject(WsEventDto.Ping()));
                 } catch (Exception e) {
                     Debug.LogError($"Ping failed to:{indicator} " + e);
+                }
+                
+                try {
+                    await Task.Delay(intervalSeconds * 1000, token);
+                } catch (TaskCanceledException) {
                     break;
                 }
-                await Task.Delay(intervalSeconds * 1000);
             }
+        }
+
+        protected override async void OnDestroy()
+        {
+            keepAliveCts?.Cancel();
+            await ws.Close();   
+            base.OnDestroy();
         }
     }
 }
