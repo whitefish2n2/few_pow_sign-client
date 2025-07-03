@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Plugins;
 using UnityEngine;
@@ -74,7 +75,7 @@ namespace Codes.OutGame
                 .OnComplete(() => spinnerBackground.SetActive(false));
         }
 
-        public async Task SpinningInAsync(float insert, Task task, float outsert)
+        public async UniTask SpinningInAsync(float insert, UniTask task, float outsert)
         {
             SpinningIn(insert);
             await task;

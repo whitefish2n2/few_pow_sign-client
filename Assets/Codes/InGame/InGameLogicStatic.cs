@@ -1,16 +1,22 @@
 using System;
 using System.Collections.Generic;
+using Plugins;
 using UnityEngine;
 
 namespace Codes.InGame
 {
-    public class MatchStatic : MonoBehaviour
+    public class InGameLogicStatic : MonoSingleton<InGameLogicStatic>
     {
         public Dictionary<int,Player> Players = new();
         
         public Dictionary<string,Mover> IngameMovers = new();
         private string score;
 
+        protected override void Initialize()
+        {
+            
+        }
+        
         /// <summary>
         /// 여깄는 score 참조해서 사용해줬음 함
         /// </summary>
@@ -44,5 +50,7 @@ namespace Codes.InGame
                 return null;
             }
         }
+
+        
     }
 }

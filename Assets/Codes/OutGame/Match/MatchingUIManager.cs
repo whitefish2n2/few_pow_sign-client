@@ -11,7 +11,7 @@ namespace Codes.OutGame.Match
     /// <summary>
     /// Bungleton On OutGame(Menu Scene)
     /// </summary>
-    public class MatchingUIManager : MonoBungleton<MatchingUIManager>
+    public class OutGameMatchController : MonoBungleton<OutGameMatchController>
     {
         protected override void Initialize() { }
         
@@ -23,8 +23,10 @@ namespace Codes.OutGame.Match
 
         private void Start()
         {
-            //이벤트 구독
             MatchingWsManager.Instance.PrepareToNewMatch();
+            MatchMakeStatic.Instance.PrepareToNewMatch();
+            
+            //이벤트 구독
             MatchingWsManager.Instance.OnMatchCanceled += OnMatchCancelled;
             MatchingWsManager.Instance.OnMatchFound += OnMatchFound;
             MatchingWsManager.Instance.OnTimeout += OnTimeout;

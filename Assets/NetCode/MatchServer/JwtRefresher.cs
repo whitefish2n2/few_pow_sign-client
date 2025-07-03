@@ -15,7 +15,7 @@ namespace NetCode
         {
             if (response.code is (int)ExceptionCode.InvalidTokenException or (int)ExceptionCode.InvalidJwtException)
             {
-                SceneLoadingManager.Instance.LoadSceneWithLoadingSceneAsync(
+                SceneLoadingManager.Instance.LoadSceneWithLoadingScene(
                     SceneEnum.Sign,
                     () => { },
                     null,

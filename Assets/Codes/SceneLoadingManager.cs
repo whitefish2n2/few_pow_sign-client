@@ -15,16 +15,21 @@ public class SceneLoadingManager : MonoSingleton<SceneLoadingManager>
         
     }
 
-    public float currentProgress = 0f;
-    public void LoadSceneWithLoadingSceneAsync(SceneEnum sceneEnum, Action onLoadStartCallback, List<AsyncOperation> works, Action onLoadEndCallback)
+    public async Task LoadSceneAsync(SceneEnum scene)
     {
-        StartCoroutine(LoadSceneWithLoadSceneSequence(sceneEnum, works, onLoadStartCallback, onLoadEndCallback));
+        await SceneManager.LoadSceneAsync(scene.ToString());
+    }
+    
+    public float currentProgress = 0f;
+    public void LoadSceneWithLoadingScene(SceneEnum targetScene,SceneEnum loadingScene, Action onLoadStartCallback=null, List<AsyncOperation> works=null, Action onLoadEndCallback = null)
+    {
+        StartCoroutine(LoadSceneWithLoadSceneSequence(targetScene, loadingScene, works, onLoadStartCallback, onLoadEndCallback));
     }
 
-    private IEnumerator LoadSceneWithLoadSceneSequence(SceneEnum sceneEnum, List<AsyncOperation> works, Action onLoadStartCallback, Action onLoadEndCallback)
+    private IEnumerator LoadSceneWithLoadSceneSequence(SceneEnum targetScene,SceneEnum loadingScene,  List<AsyncOperation> works, Action onLoadStartCallback, Action onLoadEndCallback)
     {
         // 로딩 씬 로드
-        var loadLoadingSceneOp = SceneManager.LoadSceneAsync(SceneEnum.Loading.ToString(), LoadSceneMode.Additive);
+        var loadLoadingSceneOp = SceneManager.LoadSceneAsync(loadingScene.ToString(), LoadSceneMode.Additive);
         yield return loadLoadingSceneOp;
         // 현재 씬 언로드 대기
         var unloadOp = SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
@@ -33,8 +38,8 @@ public class SceneLoadingManager : MonoSingleton<SceneLoadingManager>
         
 
         // 실제 씬 로드 시작
-        var loadSceneOp = SceneManager.LoadSceneAsync(sceneEnum.ToString(), LoadSceneMode.Additive);
-        works.Add(loadSceneOp);
+        var loadSceneOp = SceneManager.LoadSceneAsync(targetScene.ToString(), LoadSceneMode.Additive);
+        works?.Add(loadSceneOp);
 
         onLoadStartCallback?.Invoke();
 
@@ -45,7 +50,16 @@ public class SceneLoadingManager : MonoSingleton<SceneLoadingManager>
             yield return null;
         }
 
-        currentScene = sceneEnum;
+        if (works != null)
+        {
+            foreach (var work in works)
+            {
+                if(work!=null)
+                    yield return work;
+            }
+        }
+
+        currentScene = targetScene;
 
         //  로딩 완료 콜백
         onLoadEndCallback?.Invoke();
@@ -62,7 +76,10 @@ public enum SceneEnum
     Loading,
     Sign,
     Main,
-    Game
+    LoadingPick,
+    Pick,
+    Game,
+    Black,
 }
 
 

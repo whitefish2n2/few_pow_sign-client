@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Codes;
 using Codes.FileIO;
 using Codes.Util;
+using Cysharp.Threading.Tasks;
 using NetCode;
 using NetTest.Dto;
 using Newtonsoft.Json;
@@ -29,7 +30,7 @@ namespace NetTest
         public Action<ErrorResponse> OnTokenExpired;
         public Action OnServerTimeout;
 
-        public async Task SignInWithRefreshToken(Action<ApiResponse<SignInResponseDto>> onSuccess, Action<ErrorResponse> onFail,Action onTimeOut, SignInWithRefreshDto dto)
+        public async UniTask SignInWithRefreshToken(Action<ApiResponse<SignInResponseDto>> onSuccess, Action<ErrorResponse> onFail,Action onTimeOut, SignInWithRefreshDto dto)
         {
             const string endPoint = "/auth/signin-with-refresh";
             var url = new UrlBuilder(ClientStatic.Instance.GetFullUrl()+endPoint).Build();
@@ -37,21 +38,21 @@ namespace NetTest
         }
         
         
-        public async Task SignUp(Action<ApiResponse<SignInResponseDto>> onSuccess, Action<ErrorResponse> onFail, Action onTimeOut, SignUpDto dto)
+        public async UniTask SignUp(Action<ApiResponse<SignInResponseDto>> onSuccess, Action<ErrorResponse> onFail, Action onTimeOut, SignUpDto dto)
         {
             const string endPoint = "/auth/signup";
             var url = (new UrlBuilder(ClientStatic.Instance.GetFullUrl() + endPoint)).Build();
             await HandlePostRequest(url,onSuccess,onFail,onTimeOut, dto,"SignUp",20);
         }
         
-        public async Task SignIn(Action<ApiResponse<SignInResponseDto>> onSuccess, Action<ErrorResponse> onFail,Action onTimeOut, SignInDto dto)
+        public async UniTask SignIn(Action<ApiResponse<SignInResponseDto>> onSuccess, Action<ErrorResponse> onFail,Action onTimeOut, SignInDto dto)
         {
             const string endPoint = "/auth/signin";
             var url = new UrlBuilder(ClientStatic.Instance.MatchServerBaseUrl).SetPort(ClientStatic.Instance.MatchServerPort).SetEndPoint(endPoint).Build();
             await HandlePostRequest(url,onSuccess,onFail,onTimeOut,dto,"SignIn",15);
         }
 
-        public async Task<bool> ValidateToken(string jwt)
+        public async UniTask<bool> ValidateToken(string jwt)
         {
             var tcs = new TaskCompletionSource<bool>();
 
@@ -69,13 +70,13 @@ namespace NetTest
             return await tcs.Task;
         }
         
-        private async Task RefreshJwt(JwtRefreshDto dto, Action<ApiResponse<string>> onSuccess, Action<ErrorResponse> onFail, Action onTimeOut)
+        private async UniTask RefreshJwt(JwtRefreshDto dto, Action<ApiResponse<string>> onSuccess, Action<ErrorResponse> onFail, Action onTimeOut)
         {
             const string endPoint = "/auth/refresh";
             var url = new UrlBuilder(ClientStatic.Instance.MatchServerBaseUrl).SetPort(ClientStatic.Instance.MatchServerPort).SetEndPoint(endPoint).Build();
             await HandlePostRequest<ApiResponse<string>>(url, onSuccess,onFail,onTimeOut,dto,"RefreshJwt",15);
         }
-        public async Task<bool> RefreshJwt()
+        public async UniTask<bool> RefreshJwt()
         {
             var tcs = new TaskCompletionSource<bool>();
             var dto = new JwtRefreshDto(TokenHolder.instance.GetJwt(),TokenHolder.instance.GetRefreshToken());
@@ -111,7 +112,7 @@ namespace NetTest
                 15);
             return await tcs.Task;
         }
-        private async Task<bool> RefreshJwtInternal()
+        private async UniTask<bool> RefreshJwtInternal()
         {
             var dto = new JwtRefreshDto(TokenHolder.instance.GetJwt(), TokenHolder.instance.GetRefreshToken());
             string newJwt = null;
@@ -159,18 +160,18 @@ namespace NetTest
             return new NativeWebSocket.WebSocket(url, new Dictionary<string, string>{{"Authorization", "Bearer " + token}});
         }
         
-        public async Task GetInventoryItem()
+        public async UniTask GetInventoryItem()
         {
             throw new NotImplementedException();
         }
 
-        public async Task GetSkin()
+        public async UniTask GetSkin()
         {
             throw new NotImplementedException();
         }
         
 
-        public async Task HandlePostRequest<T>(string url,
+        public async UniTask HandlePostRequest<T>(string url,
             Action<T> onSuccess
             , Action<ErrorResponse> onFail
             , Action onTimeOut,
@@ -183,7 +184,7 @@ namespace NetTest
             {
                 var response = await Post(url, sendData,timeOutTime);
                 
-                var responseBody = await response.Content.ReadAsStringAsync();
+                var responseBody = await response.Content.ReadAsStringAsync().AsUniTask();
                 Debug.Log($"[{indicator}] Post Response: {responseBody}");
                 if (response.IsSuccessStatusCode)
                 {
@@ -222,7 +223,7 @@ namespace NetTest
                 onFail.Invoke(ErrorResponse.NotDefined(indicator));
             }
         }
-        public static async Task HandleGetRequest<T>(string url,
+        public static async UniTask HandleGetRequest<T>(string url,
             Action<T> onSuccess
             , Action<ErrorResponse> onFail
             , Action onTimeOut,
@@ -234,7 +235,7 @@ namespace NetTest
             {
                 var response = await Get(url,timeOutTime);
                 
-                var responseBody = await response.Content.ReadAsStringAsync();
+                var responseBody = await response.Content.ReadAsStringAsync().AsUniTask();
                 Debug.Log($"[{indicator}] Get Response: {responseBody}");
                 if (response.IsSuccessStatusCode)
                 {
@@ -269,7 +270,7 @@ namespace NetTest
         }
 
         
-        private static async Task<HttpResponseMessage> Post(string url, object data, int timeoutTime = 15)
+        private static async UniTask<HttpResponseMessage> Post(string url, object data, int timeoutTime = 15)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Add("Authorization", "Bearer " + TokenHolder.instance.GetJwt());
@@ -277,15 +278,15 @@ namespace NetTest
             string json = JsonConvert.SerializeObject(data);
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
             
-            return await HttpClient.SendAsync(request,HttpCompletionOption.ResponseHeadersRead, cts.Token);
+            return await HttpClient.SendAsync(request,HttpCompletionOption.ResponseHeadersRead, cts.Token).AsUniTask();
         }
         
-        public static async Task<HttpResponseMessage> Get(string url, int timeoutTime = 15)
+        public static async UniTask<HttpResponseMessage> Get(string url, int timeoutTime = 15)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("Authorization", "Bearer " + TokenHolder.instance.GetJwt());
             var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutTime));
-            return await HttpClient.SendAsync(request,HttpCompletionOption.ResponseHeadersRead, cts.Token);
+            return await HttpClient.SendAsync(request,HttpCompletionOption.ResponseHeadersRead, cts.Token).AsUniTask();
         }
         
     }

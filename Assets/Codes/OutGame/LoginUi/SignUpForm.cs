@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Codes.OutGame.LoginUi;
 using NetTest.Dto;
@@ -12,11 +13,18 @@ public class SignUpForm : MonoBehaviour
 
     public async void Apply()
     {
-        SignUpDto signDto = new SignUpDto();
-        signDto.ID = id.tmpInputField.text;
-        signDto.Name = username.tmpInputField.text;
-        signDto.Password = password.tmpInputField.text;
-        await LoginUiManager.Instance.SignUp(signDto);
+        try
+        {
+            SignUpDto signDto = new SignUpDto();
+            signDto.ID = id.tmpInputField.text;
+            signDto.Name = username.tmpInputField.text;
+            signDto.Password = password.tmpInputField.text;
+            await LoginUiManager.Instance.SignUp(signDto);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
     }
 
     public void CheckPasswordConfirm()

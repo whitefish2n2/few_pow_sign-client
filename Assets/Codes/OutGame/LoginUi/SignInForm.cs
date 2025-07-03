@@ -1,3 +1,4 @@
+using System;
 using NetTest;
 using NetTest.Dto;
 using UnityEngine;
@@ -13,10 +14,17 @@ namespace Codes.OutGame.LoginUi
 
         public async void Apply()
         {
-            SignInDto signDto = new SignInDto();
-            signDto.ID = id.tmpInputField.text;
-            signDto.Password = password.tmpInputField.text; ;
-            await LoginUiManager.Instance.SignIn(signDto);
+            try
+            {
+                SignInDto signDto = new SignInDto();
+                signDto.ID = id.tmpInputField.text;
+                signDto.Password = password.tmpInputField.text; ;
+                await LoginUiManager.Instance.SignIn(signDto);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
 
         public void InvalidId()

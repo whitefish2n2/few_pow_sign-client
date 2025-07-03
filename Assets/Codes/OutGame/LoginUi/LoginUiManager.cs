@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Codes.FileIO;
 using Codes.Util;
+using Cysharp.Threading.Tasks;
 using NetTest;
 using NetTest.Dto;
 using UnityEngine;
@@ -24,7 +25,7 @@ namespace Codes.OutGame.LoginUi
             TryAutoLogin();
         }
 
-        private async Task TryAutoLogin()
+        private async UniTask TryAutoLogin()
         {
             //todo: auto login 여부 확인
             var token = TokenIO.LoadToken();
@@ -61,7 +62,7 @@ namespace Codes.OutGame.LoginUi
         {
             AlertManager.Instance.AlertRetryableError(ErrorResponse.ServerTimeout, async () => { await SignIn(tempSignInInfo);} );
         }
-        public async Task SignIn(SignInDto signInDto)
+        public async UniTask SignIn(SignInDto signInDto)
         {
             tempSignInInfo = signInDto;
             var task = RequestClient.Instance.SignIn(OnSigninComplete,OnSigninFailed,OnSigninTimeout, signInDto);
@@ -91,7 +92,7 @@ namespace Codes.OutGame.LoginUi
         {
             AlertManager.Instance.AlertRetryableError(ErrorResponse.ServerTimeout, async () => { await SignUp(tempSignUpInfo);} );
         }
-        public async Task SignUp(SignUpDto signUpDto)
+        public async UniTask SignUp(SignUpDto signUpDto)
         {
             tempSignUpInfo = signUpDto;
             var task = RequestClient.Instance.SignUp(OnSignUpComplete, OnSignUpFailed, OnSignUpTimeout, signUpDto);

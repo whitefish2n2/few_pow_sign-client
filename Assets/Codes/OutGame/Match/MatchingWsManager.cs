@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NativeWebSocket;
 using NetCode;
 using NetTest;
@@ -45,7 +46,7 @@ namespace Codes.OutGame.Match
             #endif
         }
 
-        //매칭 화면에 들어올때마다 MatchingUiManager가 한번씩 실행
+        //매칭 화면에 들어올때마다 OutGameMatchController가 한번씩 실행
         public void PrepareToNewMatch()
         {
             if (ws != null)
@@ -65,7 +66,7 @@ namespace Codes.OutGame.Match
             currentGameMode = newGameMode;
         }
 
-        public async Task Match(int timeout)
+        public async UniTask Match(int timeout)
         {
             bool isValidToken = await RequestClient.Instance.ValidateToken( TokenHolder.instance.GetJwt());
             if (!isValidToken)
@@ -95,7 +96,7 @@ namespace Codes.OutGame.Match
                 {
                     matchingState = MatchingWebsocketState.Wait;
                     Debug.Log("Matching Websocket Open!");
-                    await ws.SendText(JsonConvert.SerializeObject(WsEventDto.EnqueueMatch(currentGameMode)));
+                    await ws.SendText(JsonConvert.SerializeObject(WsEventDto.EnqueueMatch(currentGameMode))).AsUniTask();
                 }
                 catch (Exception e)
                 {
@@ -119,24 +120,24 @@ namespace Codes.OutGame.Match
             }
         }
 
-        private async Task<bool> ConnectWithTimeout(NativeWebSocket.WebSocket ws, int timeout)
+        private async UniTask<bool> ConnectWithTimeout(NativeWebSocket.WebSocket ws, int timeout)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            var tcs = new UniTaskCompletionSource<bool>();
             
             var cts = new CancellationTokenSource();
-            var timeoutTask = Task.Delay(timeout*1000, cts.Token);
+            var timeoutTask = UniTask.Delay(timeout*1000, cancellationToken: cts.Token);
             ws.OnOpen += () => tcs.TrySetResult(true);
             ws.OnError += (e) => Debug.LogError(e);
             _ = ws.Connect();
     
-            var finished = await Task.WhenAny(tcs.Task, timeoutTask);
-            if (finished == timeoutTask)
+            var finished = await UniTask.WhenAny(tcs.Task, timeoutTask);
+            if (!finished.hasResultLeft)
             {
                 Debug.LogError("WebSocket connect timed out!");
-                try { await ws.Close(); } catch(Exception e) { Debug.LogException(e); }
+                try { await ws.Close().AsUniTask(); } catch(Exception e) { Debug.LogException(e); }
                 return false;
             }
-            if (tcs.Task.Result)
+            else
             {
                 cts.Cancel();
                 Debug.Log("WebSocket Connect Success!");
@@ -229,18 +230,18 @@ namespace Codes.OutGame.Match
             
         }
         
-        async Task KeepAliveLoop(WebSocket websocket, int intervalSeconds, string indicator,CancellationToken token) {
+        async UniTask KeepAliveLoop(WebSocket websocket, int intervalSeconds, string indicator,CancellationToken token) {
             while (websocket.State == WebSocketState.Open &&  !token.IsCancellationRequested) {
                 try
                 {
                     Debug.Log($"Send Ping to {indicator}");
-                    await websocket.SendText(JsonConvert.SerializeObject(WsEventDto.Ping()));
+                    await websocket.SendText(JsonConvert.SerializeObject(WsEventDto.Ping())).AsUniTask();
                 } catch (Exception e) {
                     Debug.LogError($"Ping failed to:{indicator} " + e);
                 }
                 
                 try {
-                    await Task.Delay(intervalSeconds * 1000, token);
+                    await UniTask.Delay(intervalSeconds * 1000, cancellationToken: token);
                 } catch (TaskCanceledException) {
                     break;
                 }
@@ -249,9 +250,16 @@ namespace Codes.OutGame.Match
 
         protected override async void OnDestroy()
         {
-            keepAliveCts?.Cancel();
-            await ws.Close();   
-            base.OnDestroy();
+            try
+            {
+                keepAliveCts?.Cancel();
+                await ws.Close();   
+                base.OnDestroy();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
     }
 }

@@ -42,8 +42,9 @@ public class ClientMonoStatic : MonoSingleton<ClientMonoStatic>
         try
         {
             CheckCriticalSingleton();
-            SceneLoadingManager.Instance.LoadSceneWithLoadingSceneAsync(
+            SceneLoadingManager.Instance.LoadSceneWithLoadingScene(
                 SceneEnum.Sign,
+                SceneEnum.Loading,
                 () => { },
                 null,
                 async () => { AlertManager.Instance.AlertRetryableError(errorResponse); }

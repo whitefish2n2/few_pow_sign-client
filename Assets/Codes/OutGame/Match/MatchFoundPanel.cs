@@ -15,8 +15,8 @@ namespace Codes.OutGame.Match
 
         private void Start()
         {
-            MatchingUIManager.Instance.OnMatchFoundAction += OnMatchFound;
-            MatchingUIManager.Instance.OnMatchCanceledAction += OnMatchCanceled;
+            OutGameMatchController.Instance.OnMatchFoundAction += OnMatchFound;
+            OutGameMatchController.Instance.OnMatchCanceledAction += OnMatchCanceled;
             gameObject.SetActive(false);
         }
 
@@ -37,9 +37,9 @@ namespace Codes.OutGame.Match
 
         private void OnDestroy()
         {
-            if(!MatchingUIManager.IsInitialized) return;
-            MatchingUIManager.Instance.OnMatchFoundAction -= OnMatchFound;
-            MatchingUIManager.Instance.OnMatchCanceledAction -= OnMatchCanceled;
+            if(!OutGameMatchController.IsInitialized) return;
+            OutGameMatchController.Instance.OnMatchFoundAction -= OnMatchFound;
+            OutGameMatchController.Instance.OnMatchCanceledAction -= OnMatchCanceled;
         }
         
     }

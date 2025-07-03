@@ -24,11 +24,11 @@ namespace Codes.OutGame.Match
         private void Start()
         {
             
-            if (MatchingUIManager.IsInitialized)
+            if (OutGameMatchController.IsInitialized)
             {
-                MatchingUIManager.Instance.OnMatchingStart += BeMatching;
-                MatchingUIManager.Instance.OnMatchCanceledAction += MatchCancel;
-                MatchingUIManager.Instance.OnMatchFoundAction += OnMatchFound;
+                OutGameMatchController.Instance.OnMatchingStart += BeMatching;
+                OutGameMatchController.Instance.OnMatchCanceledAction += MatchCancel;
+                OutGameMatchController.Instance.OnMatchFoundAction += OnMatchFound;
             }
             
         }
@@ -38,13 +38,13 @@ namespace Codes.OutGame.Match
         {
             if (!isMatching)
             {
-                if (MatchingUIManager.IsInitialized)
-                    MatchingUIManager.Instance.Match();
+                if (OutGameMatchController.IsInitialized)
+                    OutGameMatchController.Instance.Match();
                 isMatching = true;
             }
             else
             {
-                MatchingUIManager.Instance.Cancel();
+                OutGameMatchController.Instance.Cancel();
             }
             
         }
@@ -81,11 +81,11 @@ namespace Codes.OutGame.Match
         }
         private void OnDestroy()
         {
-            if (MatchingUIManager.Instance)
+            if (OutGameMatchController.Instance)
             {
-                MatchingUIManager.Instance.OnMatchingStart -= BeMatching;
-                MatchingUIManager.Instance.OnMatchCanceledAction -= MatchCancel;
-                MatchingUIManager.Instance.OnMatchFoundAction -= OnMatchFound;
+                OutGameMatchController.Instance.OnMatchingStart -= BeMatching;
+                OutGameMatchController.Instance.OnMatchCanceledAction -= MatchCancel;
+                OutGameMatchController.Instance.OnMatchFoundAction -= OnMatchFound;
             }
             
         }
