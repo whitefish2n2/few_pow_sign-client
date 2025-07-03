@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Map;
+using MapFile.MapCode;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -12,7 +12,7 @@ namespace NetCode
         public string sessionIndex;
         public string url;
         [JsonConverter(typeof(StringEnumConverter))]
-        public MapEnum map;
+        public Map.MapEnum map;
         public List<NewPlayerDto> players;
     }
 }

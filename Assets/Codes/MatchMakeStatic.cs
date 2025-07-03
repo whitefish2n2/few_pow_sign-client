@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Codes.OutGame.Match;
+using MapFile.MapCode;
 using NetCode;
 using Plugins;
 using UnityEngine;
@@ -12,8 +13,10 @@ using UnityEngine;
 /// </summary>
 public class MatchMakeStatic : MonoSingleton<MatchMakeStatic>
 {
+    public string gameId;
     public string userWebsocketKey;
     public string userDedicatedServerVerifyKey;
+    public Map.MapEnum map;
     public UInt16 dedicatedServerIndex;
     private List<NewPlayerDto> playerConstructor = new List<NewPlayerDto>();
     protected override void Start()
@@ -28,17 +31,22 @@ public class MatchMakeStatic : MonoSingleton<MatchMakeStatic>
     /// </summary>
     public void PrepareToNewMatch()
     {
+        gameId = "";
         userWebsocketKey = "";
         userDedicatedServerVerifyKey = "";
         dedicatedServerIndex = 0;
+        map = Map.MapEnum.Test;
         playerConstructor.Clear();
     }
     private void OnMatchFound(MatchFoundDto matchFoundDto)
     {
+        gameId = matchFoundDto.gameId;
         userDedicatedServerVerifyKey = matchFoundDto.sessionVerifyKey;
         dedicatedServerIndex = Convert.ToUInt16(matchFoundDto.sessionIndex);
         playerConstructor = matchFoundDto.players;
         userDedicatedServerVerifyKey = matchFoundDto.sessionVerifyKey;
+        map = matchFoundDto.map;
+        
     }
 
     private void OnMatchEnqueueEnsured(EnsureMatchEnqueueDto matchEnqueueDto)

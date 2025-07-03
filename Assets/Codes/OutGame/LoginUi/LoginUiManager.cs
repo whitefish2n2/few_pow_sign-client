@@ -74,7 +74,7 @@ namespace Codes.OutGame.LoginUi
         private void OnSignUpComplete(ApiResponse<SignInResponseDto> response)
         {
             TokenHolder.instance.SetToken(response.data.Jwt,response.data.RefreshToken);
-            SceneManager.LoadScene("Scenes/OutgameSkeleton");
+            SceneManager.LoadScene("Scenes/OutgameSkeleton");//todo:sceneLoadManager참조하는걸로 바꾸죠
         }
         private void OnSignUpFailed(ErrorResponse errorResponse)
         {

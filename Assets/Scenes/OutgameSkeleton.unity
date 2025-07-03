@@ -684,6 +684,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0928bc6ad8d9172469475e0b0d69671f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loadTerm: 3
 --- !u!4 &351475145
 Transform:
   m_ObjectHideFlags: 0
@@ -1876,8 +1877,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae568661b1b02c54f8964dfb9e059f3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameId: 
   userWebsocketKey: 
   userDedicatedServerVerifyKey: 
+  map: 0
   dedicatedServerIndex: 0
 --- !u!4 &1538171299
 Transform:
