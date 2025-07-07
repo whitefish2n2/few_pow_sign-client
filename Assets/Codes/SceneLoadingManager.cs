@@ -3,21 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Plugins;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneLoadingManager : MonoSingleton<SceneLoadingManager>
 {
-    public SceneEnum currentScene = SceneEnum.Sign;
+
+    public event Action<float> OnProgressUpdated;
+    public SceneEnum currentScene = SceneEnum.LoginUi;
     protected override void Initialize()
     {
         
     }
 
-    public async Task LoadSceneAsync(SceneEnum scene)
+    public void LoadSceneAsync(SceneEnum scene,Action onLoadEndCallback)
     {
-        await SceneManager.LoadSceneAsync(scene.ToString());
+        StartCoroutine(LoadSceneIE(scene, onLoadEndCallback));
+    }
+
+    private IEnumerator LoadSceneIE(SceneEnum target, Action onLoadEndCallback)
+    {
+        var loadSceneOp = SceneManager.LoadSceneAsync(target.ToString(), LoadSceneMode.Single);
+        while (loadSceneOp is { isDone: false })
+        {
+            currentProgress = loadSceneOp.progress;
+            OnProgressUpdated?.Invoke(currentProgress);
+            yield return null;
+        }
+        
+        onLoadEndCallback?.Invoke();
+
     }
     
     public float currentProgress = 0f;
@@ -29,27 +46,23 @@ public class SceneLoadingManager : MonoSingleton<SceneLoadingManager>
     private IEnumerator LoadSceneWithLoadSceneSequence(SceneEnum targetScene,SceneEnum loadingScene,  List<AsyncOperation> works, Action onLoadStartCallback, Action onLoadEndCallback)
     {
         // 로딩 씬 로드
-        var loadLoadingSceneOp = SceneManager.LoadSceneAsync(loadingScene.ToString(), LoadSceneMode.Additive);
+        var loadLoadingSceneOp = SceneManager.LoadSceneAsync(loadingScene.ToString(), LoadSceneMode.Single);
         yield return loadLoadingSceneOp;
-        // 현재 씬 언로드 대기
-        var unloadOp = SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-        yield return unloadOp;
-
         
 
         // 실제 씬 로드 시작
-        var loadSceneOp = SceneManager.LoadSceneAsync(targetScene.ToString(), LoadSceneMode.Additive);
-        works?.Add(loadSceneOp);
+        var loadSceneOp = SceneManager.LoadSceneAsync(targetScene.ToString(), LoadSceneMode.Single);
 
         onLoadStartCallback?.Invoke();
 
-        // 로딩 진행 대기 및 진행률 업데이트
+        // 로딩 진행 대기 및 진행률 업데이트, 진행률 업데이트 이벤트 호출
         while (loadSceneOp is { isDone: false })
         {
             currentProgress = loadSceneOp.progress;
+            OnProgressUpdated?.Invoke(currentProgress);
             yield return null;
         }
-
+        
         if (works != null)
         {
             foreach (var work in works)
@@ -58,28 +71,25 @@ public class SceneLoadingManager : MonoSingleton<SceneLoadingManager>
                     yield return work;
             }
         }
+        
 
         currentScene = targetScene;
-
+        
         //  로딩 완료 콜백
         onLoadEndCallback?.Invoke();
-
-        // 로딩 씬 언로드 
-        var unloadLoadingOp = SceneManager.UnloadSceneAsync(SceneEnum.Loading.ToString());
-        yield return unloadLoadingOp;
     }
     
 }
-
 public enum SceneEnum
 {
-    Loading,
-    Sign,
-    Main,
-    LoadingPick,
-    Pick,
-    Game,
-    Black,
+    Loading,//not exist
+    LoginUi,
+    OutgameSkeleton,
+    LoadingPickScene,
+    PickSkeleton,
+    LoadingMultiGame,
+    TestScene,
+    Black,//not exist
 }
 
 

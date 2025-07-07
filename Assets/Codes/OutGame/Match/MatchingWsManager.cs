@@ -179,6 +179,26 @@ namespace Codes.OutGame.Match
                         OnEnsureMatchEnqueue?.Invoke(ensureEnqueueDto);
                         break;
                     }
+                    case WsEventType.NotifyCharacterPicked:
+                    {
+                        //TODO()
+                        break;
+                    }
+                    case WsEventType.NotifyCharacterChanged:
+                    {
+                        //todo
+                        break;
+                    }
+                    case WsEventType.PickCharacterFailed:
+                    {
+                        //todo
+                        break;
+                    }
+                    case WsEventType.PickCharacterSuccess:
+                    {
+                        //todo
+                        break;
+                    }
                 }
             }
             catch (Exception e)

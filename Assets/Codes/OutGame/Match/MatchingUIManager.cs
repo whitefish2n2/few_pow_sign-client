@@ -10,6 +10,8 @@ namespace Codes.OutGame.Match
 {
     /// <summary>
     /// Bungleton On OutGame(Menu Scene)
+    /// 메인 메뉴에서 매치 관련 로직 관리하는 오브젝트
+    /// event 체이닝으로 매치 관련 이벤트 반응 가능
     /// </summary>
     public class OutGameMatchController : MonoBungleton<OutGameMatchController>
     {
@@ -65,10 +67,11 @@ namespace Codes.OutGame.Match
         }
         protected override void OnDestroy()
         {
-            if (MatchingWsManager.IsInitialized)
+            
+            if (MatchingWsManager.TryGetInstance(out var wsManager))
             {
-                MatchingWsManager.Instance.OnMatchCanceled -= OnMatchCancelled;
-                MatchingWsManager.Instance.OnMatchFound -= OnMatchFound;
+                wsManager.OnMatchCanceled -= OnMatchCancelled;
+                wsManager.OnMatchFound -= OnMatchFound;
             }
             
             base.OnDestroy();

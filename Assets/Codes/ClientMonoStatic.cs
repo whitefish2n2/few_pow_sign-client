@@ -43,7 +43,7 @@ public class ClientMonoStatic : MonoSingleton<ClientMonoStatic>
         {
             CheckCriticalSingleton();
             SceneLoadingManager.Instance.LoadSceneWithLoadingScene(
-                SceneEnum.Sign,
+                SceneEnum.LoginUi,
                 SceneEnum.Loading,
                 () => { },
                 null,

@@ -23,5 +23,7 @@ namespace NetCode
         EnsureEnqueueMatch,
         NotifyCharacterChanged,
         NotifyCharacterPicked,
+        PickCharacterFailed,
+        PickCharacterSuccess,
     }
 }

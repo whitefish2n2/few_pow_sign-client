@@ -81,11 +81,12 @@ namespace Codes.OutGame.Match
         }
         private void OnDestroy()
         {
-            if (OutGameMatchController.Instance)
+            
+            if (OutGameMatchController.TryGetInstance(out var matchController))
             {
-                OutGameMatchController.Instance.OnMatchingStart -= BeMatching;
-                OutGameMatchController.Instance.OnMatchCanceledAction -= MatchCancel;
-                OutGameMatchController.Instance.OnMatchFoundAction -= OnMatchFound;
+                matchController.OnMatchingStart -= BeMatching;
+                matchController.OnMatchCanceledAction -= MatchCancel;
+                matchController.OnMatchFoundAction -= OnMatchFound;
             }
             
         }

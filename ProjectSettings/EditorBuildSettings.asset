@@ -20,6 +20,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OutGame.unity
     guid: a382eecdfe0e1c44bb428eb11f95c8bb
+  - enabled: 1
+    path: Assets/Scenes/GunTest.unity
+    guid: 7daf456d15c18dc408aead91d5cc7d10
+  - enabled: 1
+    path: Assets/Scenes/LoadingMultiGame.unity
+    guid: 7f9a0e6ac4f86ab4984f88ee574418d5
+  - enabled: 1
+    path: Assets/Scenes/LoadingPickScene.unity
+    guid: f49688a7ac9369c4688a416ffc2df113
+  - enabled: 1
+    path: Assets/Scenes/PickSkeleton.unity
+    guid: a9721c424d79c364785dabf9368b3223
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 8709eee444835644ba3ee2138def38ed, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

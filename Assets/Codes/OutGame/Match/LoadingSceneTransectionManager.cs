@@ -23,6 +23,6 @@ public class LoadingSceneTransectionManager : MonoBehaviour
     IEnumerator TransectionIE()
     {
         yield return new WaitForSeconds(loadTerm);
-        SceneLoadingManager.Instance.LoadSceneWithLoadingScene(SceneEnum.Pick, SceneEnum.LoadingPick);
+        SceneLoadingManager.Instance.LoadSceneWithLoadingScene(SceneEnum.PickSkeleton, SceneEnum.LoadingPickScene);
     }
 }

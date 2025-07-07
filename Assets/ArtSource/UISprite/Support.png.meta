@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b9510c41e987c2349882a18a4687af79
+guid: d892a60373b55044f953cb2cd354efd3
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,23 +110,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: AttackCharacterBackground_0
+      name: Support_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1774
-        height: 698
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 246, y: 0, z: 85, w: 0}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8e8a3b42dc497ec4caa90f5e6d8e74a4
-      internalID: 1233108447
+      spriteID: 2c97c5f8dfb999d49b931aa1f01dc195
+      internalID: -1921575211
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 83a6f8615fe1f7c43982997c389d14e6
+    spriteID: bd0855887ab12334cbb016246c4ded14
     internalID: 0
     vertices: []
     indices: 
@@ -145,7 +145,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      AttackCharacterBackground_0: 1233108447
+      Support_0: -1921575211
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
