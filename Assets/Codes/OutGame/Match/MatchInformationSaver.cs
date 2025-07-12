@@ -15,9 +15,7 @@ namespace Codes.OutGame.Match
 
         private void HandleAndSaveMatchFound(MatchFoundDto dto)
         {
-            ClientStatic.Instance.dedicatedBaseUrl = dto.url;
-            ClientStatic.Instance.sessionIndex = Convert.ToUInt16(dto.sessionIndex);//todo 검증
-            ClientStatic.Instance.sessionKey = dto.sessionVerifyKey;
+            //todo: 매치 정보 파일에 저장하고 재접속 준비
         }
 
         void OnDestroy()

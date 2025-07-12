@@ -17,8 +17,10 @@ public class MatchMakeStatic : MonoSingleton<MatchMakeStatic>
     public string userWebsocketKey;
     public string userDedicatedServerVerifyKey;
     public Map.MapEnum map;
+    
+    public string dedicatedBaseUrl;
     public UInt16 dedicatedServerIndex;
-    private List<NewPlayerDto> playerConstructor = new List<NewPlayerDto>();
+    public List<NewPlayerDto> playerConstructor = new List<NewPlayerDto>();
     protected override void Start()
     {
         //이벤트 구독

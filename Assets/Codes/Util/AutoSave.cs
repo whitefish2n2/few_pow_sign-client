@@ -1,9 +1,11 @@
+#if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-[InitializeOnLoad]
+
+//[InitializeOnLoad]
 public class AutoSave
 {
     static AutoSave()
@@ -39,3 +41,4 @@ public class AutoSave
     }
 
 }
+#endif

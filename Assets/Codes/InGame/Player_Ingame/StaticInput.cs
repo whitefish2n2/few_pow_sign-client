@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Numerics;
-using ENet;
-using Unity.VisualScripting;
+using NetTest;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
+using NetTest;
 
 namespace Codes.InGame.Player_Ingame
 {
@@ -28,7 +27,7 @@ namespace Codes.InGame.Player_Ingame
                 return null;
             rotTemp = rotEular;
             byte[] binaryData = System.Buffers.ArrayPool<byte>.Shared.Rent(22);
-            Buffer.BlockCopy(BitConverter.GetBytes(NetTestStatic.instance.userPrivateKey), 0, binaryData, 0, 8);
+            Buffer.BlockCopy(BitConverter.GetBytes(ClientStatic.Instance.MatchServerPort/*todo - user primary key 불러와서 ㅇㅇ*/), 0, binaryData, 0, 8);
             binaryData[8] = (byte)(sbyte)inputVector.x;
             binaryData[9] = (byte)(sbyte)inputVector.y;
             Buffer.BlockCopy(BitConverter.GetBytes(rotEular.x), 0, binaryData, 10, 4);

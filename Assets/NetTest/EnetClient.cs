@@ -47,8 +47,8 @@ namespace NetTest
                 {
                     Debug.LogError("client not created");
                 }
-                enet.ENet.enet_address_set_host_ip(&address, NetTestStatic.instance.dedicatedBaseUrl);
-                address.port = Convert.ToUInt16(NetTestStatic.instance.dedicatedPort);
+                enet.ENet.enet_address_set_host_ip(&address, MatchMakeStatic.Instance.dedicatedBaseUrl);
+                address.port = Convert.ToUInt16(7777/*todo: 포트 이래저래 잘 해봐요*/);
                 Debug.LogError((*client).serviceTime);
                 //Address address = new Address();
                 server = enet.ENet.enet_host_connect(client,&address,1,2);

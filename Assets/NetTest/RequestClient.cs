@@ -1,21 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using NativeWebSocket;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Codes;
-using Codes.FileIO;
 using Codes.Util;
 using Cysharp.Threading.Tasks;
 using NetCode;
 using NetTest.Dto;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Unity.VisualScripting.Antlr3.Runtime;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace NetTest
@@ -199,7 +194,7 @@ namespace NetTest
                         
                         //Jwt Refresh 시도 후 재요청
                         Debug.LogError($"[{indicator}] Error:{response.StatusCode}");
-                        if (errorResponse.code == (int)ExceptionCode.InvalidJwtException && ClientStatic.Instance.jwt != null && ClientStatic.Instance.refreshToken != null)
+                        if (errorResponse.code == (int)ExceptionCode.InvalidJwtException && TokenHolder.instance.GetJwt() != null && TokenHolder.instance.GetRefreshToken() != null)
                         {
                             await RefreshJwtInternal();
                         }

@@ -303,7 +303,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5926136153848138793}
+        m_TargetAssemblyTypeName: PickCharacterElement, Assembly-CSharp
+        m_MethodName: Click
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5926136153848138793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -316,10 +328,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee24297421057ce4c9106bfadf923b86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterId: 
   characterPortrait: {fileID: 3101676882668477823}
   characterName: {fileID: 7146422011637324393}
   pickButton: {fileID: 7222464331330390603}
   pickButtonRect: {fileID: 8501815397744732064}
+  isClickable: 0
 --- !u!114 &5001123991364016798
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Codes.OutGame.PickCharacter.Dto;
 using Cysharp.Threading.Tasks;
 using NativeWebSocket;
 using NetCode;
@@ -8,7 +9,6 @@ using NetTest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Plugins;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 namespace Codes.OutGame.Match
@@ -26,6 +26,9 @@ namespace Codes.OutGame.Match
         public event Action OnMatchMakingStarted;
 
         public event Action<EnsureMatchEnqueueDto> OnEnsureMatchEnqueue;
+        
+        public event Action<CharacterPickNotifyDto> OnCharacterPickTemporaryNotify;
+        public event Action<CharacterPickNotifyDto> OnCharacterPickNotify;
 
         public event Action OnTimeout;
         
@@ -64,6 +67,14 @@ namespace Codes.OutGame.Match
         public void ChangeGameMode(GameMode newGameMode)
         {
             currentGameMode = newGameMode;
+        }
+
+        public async UniTask ClickCharacter(string sessionId, string sessionUserKey, string characterId)
+        {
+            if (ws == null) return;
+            var selectDto = new TryCharacterPickDto {sessionId = sessionId, sessionUserKey = sessionUserKey, characterId = characterId};
+            var body = JsonConvert.SerializeObject(WsEventDto.SelectCharacterTemporary(selectDto));
+            await ws.SendText(body).AsUniTask();
         }
 
         public async UniTask Match(int timeout)
@@ -181,12 +192,14 @@ namespace Codes.OutGame.Match
                     }
                     case WsEventType.NotifyCharacterPicked:
                     {
-                        //TODO()
+                        var notifyDto = jToken.ToObject<CharacterPickNotifyDto>();
+                        OnCharacterPickNotify?.Invoke(notifyDto);
                         break;
                     }
                     case WsEventType.NotifyCharacterChanged:
                     {
-                        //todo
+                        var notifyDto = jToken.ToObject<CharacterPickNotifyDto>();
+                        OnCharacterPickTemporaryNotify?.Invoke(notifyDto);
                         break;
                     }
                     case WsEventType.PickCharacterFailed:

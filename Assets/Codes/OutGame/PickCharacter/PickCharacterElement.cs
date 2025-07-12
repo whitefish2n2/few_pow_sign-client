@@ -1,8 +1,11 @@
 using System;
+using Codes.OutGame.PickCharacter;
 using DG.Tweening;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 
 public class PickCharacterElement : MonoBehaviour
@@ -12,11 +15,17 @@ public class PickCharacterElement : MonoBehaviour
     [SerializeField] private TextMeshProUGUI characterName;
     [SerializeField] private Button pickButton;
     [SerializeField] private RectTransform pickButtonRect;
-    [SerializeField] private bool isClickable;
+    [SerializeField] private bool isClickable = true;
+
+    public LocalizedString localizedName;
 
     private void Awake()
     {
+        localizedName.RefreshString();
         pickButtonRect = gameObject.GetComponent<RectTransform>();
+        localizedName.StringChanged += value => {characterName.text = value;
+            
+        };
     }
 
     private void Start()
@@ -34,9 +43,9 @@ public class PickCharacterElement : MonoBehaviour
         characterPortrait.sprite = sprite;
     }
 
-    public void CLick()
+    public void Click()
     {
-        
+        CharacterPickInterface.Instance.ClickCharacter(characterId);
     }
 
     public void BeUnClickable()
@@ -51,8 +60,12 @@ public class PickCharacterElement : MonoBehaviour
     }
     public void OnMouseOver()
     {
-        if(isClickable)
+        if (isClickable)
+        {
             pickButtonRect.DOScale(Vector3.one*1.2f, 0.2f);
+            //Cursor.SetCursor(,); todo
+        }
+            
     }
 
     public void OnMouseExit()

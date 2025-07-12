@@ -1,6 +1,3 @@
-using System;
-using Codes.Util.Annotation;
-
 namespace Codes
 {
     public class ClientStatic
@@ -18,23 +15,10 @@ namespace Codes
         public readonly string MatchWebsocketBaseUrl = "ws://localhost";
         public readonly int MatchWebsocketPort = 8080;
         
-        public string authId;//todo: 굳이 static에 저장할필요 없을듯
-        public string authPassword;
+        public string authId;
+        public string authPassword;//todo: 굳이 static에 저장할필요 없을듯
         public string authName;
-    
-        
-        [ReadOnly] public string jwt;
-        [ReadOnly] public string refreshToken;
-        [ReadOnly] public string username;
-        [ReadOnly] public UInt64 userPrivateKey;
-        [ReadOnly] public sbyte userPublicKey;
-        [ReadOnly] public string sessionConnectToken;
-        [ReadOnly] public string sessionKey;
 
         public string dedicatedBaseUrl;
-        public string dedicatedPort;
-
-        public UInt16 sessionIndex;
-
     }
 }

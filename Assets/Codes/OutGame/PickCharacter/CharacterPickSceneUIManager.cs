@@ -1,16 +1,32 @@
+using System;
+using Codes;
+using Codes.OutGame.PickCharacter;
+using Codes.OutGame.PickCharacter.Dto;
+using Codes.Util;
 using UnityEngine;
 
-public class CharacterPickSceneUIManager : MonoBehaviour
+public class CharacterPickSceneUIManager : MonoBungleton<CharacterPickInterface>
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected override void Initialize()
+    { }
+
+    public void Start()
+    {
+        CharacterPickSceneManager.Instance.SomeonePickCharacter += SelectCharacter;
+    }
+
+    public void InitPlayerElement()
+    {
+        foreach (var o in MatchMakeStatic.Instance.playerConstructor)
+        {
+            //o.
+        }
+    }
+
+    public void SelectCharacter(CharacterPickNotifyDto dto)
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

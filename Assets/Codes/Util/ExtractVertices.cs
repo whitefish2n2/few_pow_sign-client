@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 
 using System.IO;
@@ -50,3 +51,4 @@ namespace Codes.Util
         }
     }
 }
+#endif

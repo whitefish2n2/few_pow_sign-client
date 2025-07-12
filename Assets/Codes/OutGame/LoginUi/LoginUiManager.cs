@@ -12,7 +12,7 @@ namespace Codes.OutGame.LoginUi
     public class LoginUiManager : MonoBungleton<LoginUiManager>
     {
         [SerializeField] SignInForm signInForm;
-        [SerializeField]SignUpForm signUpForm;
+        [SerializeField] SignUpForm signUpForm;
         //Log in
 
         protected override void Initialize()
@@ -22,7 +22,7 @@ namespace Codes.OutGame.LoginUi
                 Debug.LogError("LoginUiManager: signInForm, signUpForm Is Null");
             }
 
-            TryAutoLogin();
+            _ = TryAutoLogin();
         }
 
         private async UniTask TryAutoLogin()
