@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Codes;
 using Codes.OutGame.Match;
 using MapFile.MapCode;
 using NetCode;
@@ -21,6 +22,19 @@ public class MatchMakeStatic : MonoSingleton<MatchMakeStatic>
     public string dedicatedBaseUrl;
     public UInt16 dedicatedServerIndex;
     public List<NewPlayerDto> playerConstructor = new List<NewPlayerDto>();
+
+    /// <summary>
+    /// NewPlayerDto->현재 자기 자신(플레이어)인지 확인
+    /// </summary>
+    /// <returns></returns>
+    public bool isCurrentPlayer(NewPlayerDto dto)
+    {
+        return dto.Id == ClientStatic.Instance.authId;
+    }
+    public bool IsCurrentPlayerById(string id)
+    {
+        return id == ClientStatic.Instance.authId;
+    }
     protected override void Start()
     {
         //이벤트 구독

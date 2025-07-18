@@ -35,7 +35,7 @@ namespace Codes.OutGame.PickCharacter
         public event Action<CharacterPickNotifyDto> UserPickCharacterTemporary;
         public void OnTemporaryCharacterPickNotify(CharacterPickNotifyDto notifyDto)
         {
-            if (IsPlayerId(notifyDto.playerId))
+            if (MatchMakeStatic.Instance.IsCurrentPlayerById(notifyDto.playerId))
                 UserPickCharacterTemporary?.Invoke(notifyDto);
             else
                 SomeonePickCharacterTemporary?.Invoke(notifyDto);

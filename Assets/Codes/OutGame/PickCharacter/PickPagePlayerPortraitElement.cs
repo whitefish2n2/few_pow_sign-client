@@ -12,23 +12,20 @@ using UnityEngine.UI;
 /// </summary>
 public class PickPagePlayerPortraitElement : MonoBehaviour
 { 
-    [SerializeField] private TextMeshProUGUI nameField;
-    [SerializeField] private TextMeshProUGUI characterNameField;
-    [SerializeField] private Image portraitImage;
-    [SerializeField] private Outline outline;
+    [SerializeField] protected TextMeshProUGUI nameField;
+    [SerializeField] protected TextMeshProUGUI characterNameField;
+    [SerializeField] protected Image portraitImage;
+    [SerializeField] protected Outline outline;
     public LocalizedString nameLocal;
 
-    private void Awake()
+    public void Awake()
     {
         nameLocal.StringChanged += value => { characterNameField.text = value; };
     }
 
-    public void Init(string name,string characterNameHolder, Sprite defaultPortrait)
+    public void SetUserName(string name)
     {
         nameField.text = name;
-        characterNameField.text = characterNameHolder;
-        
-        portraitImage.sprite = defaultPortrait;
     }
 
     public void SetCharacterKey(string key)

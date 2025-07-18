@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Codes.Util
 {
     /// <summary>
-    /// 매 씬 초기화되는 instance로 전역 접근만 가능한 싱글톤의 변형 버전
+    /// 매 씬 초기화되는(DontDestroyOnLoad 설정 안 된) instance로 전역 접근만 가능한 싱글톤의 변형 버전
     /// </summary>
     public abstract class MonoBungleton<T> : MonoBehaviour where T : MonoBungleton<T>
     {
