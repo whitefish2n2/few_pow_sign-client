@@ -27,7 +27,7 @@ public class PickPagePlayerPortraitElement : MonoBehaviour
     {
         nameField.text = name;
     }
-
+    
     public void SetCharacterKey(string key)
     {
         nameLocal.TableEntryReference = key;

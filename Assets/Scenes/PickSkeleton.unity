@@ -245,7 +245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8501815397744732064, guid: 19b7aa5cc17425045bf9275e686f7e23, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -20.517334
+      value: -20.518555
       objectReference: {fileID: 0}
     - target: {fileID: 8501815397744732064, guid: 19b7aa5cc17425045bf9275e686f7e23, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 66117770}
   - component: {fileID: 66117771}
   m_Layer: 0
-  m_Name: CharacterPortraitSpriteHolder
+  m_Name: SpriteHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -438,12 +438,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b2d25c0c04e3384eb841502c2ca5fb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Sprites:
-    array:
-    - Key: sprite_character_portrait_tester
-      Value: {fileID: -105639049, guid: 8c53e4bb6d745fa44b75fef2735006c7, type: 3}
-    - Key: teto
-      Value: {fileID: -105639049, guid: 8c53e4bb6d745fa44b75fef2735006c7, type: 3}
+  sprites:
+    array: []
 --- !u!1 &86200896
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,7 +817,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 501249026}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -831,7 +827,7 @@ RectTransform:
   - {fileID: 1660413112}
   - {fileID: 86200897}
   - {fileID: 1145266087}
-  m_Father: {fileID: 1052076177}
+  m_Father: {fileID: 1382112960}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -888,9 +884,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e122b07354544544b1ada9068960148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterImageField: {fileID: 2636737492921804071}
+  nameField: {fileID: 0}
   characterNameField: {fileID: 939640912}
-  userNameField: {fileID: 1595457300}
+  portraitImage: {fileID: 0}
+  outline: {fileID: 0}
   nameLocal:
     m_TableReference:
       m_TableCollectionName: GUID:33a3683b154b2354f8738fa74adca2b7
@@ -1493,7 +1490,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 501249027}
   - {fileID: 1139454241}
   - {fileID: 1680602415}
   m_Father: {fileID: 0}
@@ -1985,7 +1981,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 501249027}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
