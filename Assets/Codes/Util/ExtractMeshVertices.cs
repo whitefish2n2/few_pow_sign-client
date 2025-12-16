@@ -8,9 +8,9 @@ using UnityEngine;
 
 namespace Codes.Util
 {
-    public class ExtractVertices : MonoBehaviour
+    public class ExtractMeshVertices : MonoBehaviour
     {
-        [MenuItem("Tools/ExtractVertices")]
+        [MenuItem("Tools/ExtractMeshVertices")]
         public static void Extract()
         {
             if (File.Exists("Assets/MapPoly/newMap.txt"))
