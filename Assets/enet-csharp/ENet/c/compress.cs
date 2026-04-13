@@ -1,7 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-
-#pragma warning disable CS1591
-
+﻿#pragma warning disable CS1591
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 // ReSharper disable ALL
 
 namespace enet

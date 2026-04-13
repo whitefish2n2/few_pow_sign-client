@@ -101,8 +101,9 @@ public class MoveSystem : Mover
 
     public void Move(InputAction.CallbackContext context)
     {
-        //Debug.Log(context.phase);
+        Debug.Log(context.phase);
         _inputVector =  context.ReadValue<Vector2>();
+        Debug.Log(_inputVector);
     }
     void Rotate()
     {

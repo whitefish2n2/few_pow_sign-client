@@ -7,7 +7,7 @@ using Codes.Util;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class CharacterPickSceneUIManager : MonoBungleton<CharacterPickInterface>
+public class CharacterPickSceneUIManager : MonoBungleton<CharacterPickSceneUIManager>
 {
     protected override void Initialize()
     { }
