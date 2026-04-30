@@ -229,6 +229,26 @@ namespace Codes.Util
                 for (int i = 0; i < triangles.Length; i += 3)
                     sb.AppendLine($"{triangles[i]},{triangles[i+1]},{triangles[i+2]}");
             }
+
+            if (col.material != null)
+            {
+                PhysicsMaterial mat = col.material;
+                sb.AppendLine("Material: " + mat.name);
+                sb.AppendLine("StaticFriction: " + mat.staticFriction);
+                sb.AppendLine("DynamicFriction: " + mat.dynamicFriction);
+                sb.AppendLine("Bounciness: " + mat.bounciness);
+                sb.AppendLine("BounceCombine: " + mat.bounceCombine);
+                sb.AppendLine("FrictionCombine: " + mat.frictionCombine);
+            }
+            else
+            {
+                sb.AppendLine("Material: DefaultMaterial");
+                sb.AppendLine("StaticFriction: 0.6");
+                sb.AppendLine("DynamicFriction: 0.6");
+                sb.AppendLine("Bounciness: 0");
+                sb.AppendLine("BounceCombine: " + PhysicsMaterialCombine.Average );
+                sb.AppendLine("FrictionCombine: " + PhysicsMaterialCombine.Average);
+            }
         }
         private void ExportRigidbody(GameObject go, StringBuilder sb)
         {

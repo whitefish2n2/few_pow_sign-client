@@ -286,7 +286,8 @@ namespace Codes.OutGame.Match
             try
             {
                 keepAliveCts?.Cancel();
-                await ws.Close();   
+                if(ws.State == WebSocketState.Open)
+                    await ws.Close();   
                 base.OnDestroy();
             }
             catch (Exception e)
