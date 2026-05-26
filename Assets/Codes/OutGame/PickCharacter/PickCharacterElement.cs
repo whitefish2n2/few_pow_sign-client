@@ -21,12 +21,14 @@ public class PickCharacterElement : MonoBehaviour
 
     private void Awake()
     {
-        localizedName.RefreshString();
+        
         pickButtonRect = gameObject.GetComponent<RectTransform>();
         localizedName.StringChanged += value => {characterName.text = value;
             
         };
+        localizedName.RefreshString();
     }
+    
 
     private void Start()
     {
@@ -34,9 +36,15 @@ public class PickCharacterElement : MonoBehaviour
             CharacterPickInterface.Instance.RegisterPickCharacter(characterId,this);
     }
 
-    public void ChangeCharacterName(string name)
+    public void SetCharacterKey(string key)
     {
-        characterName.text = name;
+        characterId = key;
+        if (!key.StartsWith("local_character_name_"))
+        {
+            key =  "local_character_name_" + key;
+        }
+        localizedName.TableEntryReference = key;
+        localizedName.RefreshString();
     }
     public void ChangeCharacterPortrait(Sprite sprite)
     {

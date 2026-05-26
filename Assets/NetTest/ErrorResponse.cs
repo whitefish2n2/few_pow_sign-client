@@ -41,6 +41,7 @@ namespace NetTest
         }
 
         public static ErrorResponse ServerTimeout = new ErrorResponse(-700, "서버와의 연결 시간이 초과되었습니다. 연결 상태를 확인하여주세요.");
+        public static ErrorResponse ServerConnectFailed = new ErrorResponse(-701, "서버와의 연결에 실패했습니다.");
 
         public static ErrorResponse ServerNotFound = new ErrorResponse(-800, "서버를 찾지 못했습니다.");
 

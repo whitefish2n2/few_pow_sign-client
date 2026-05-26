@@ -1,0 +1,60 @@
+{
+  "characterList": [
+    {
+      "characterId": "tester",
+      "role": "Attack",
+      "baseStats": {
+        "maxHp": 200,
+        "speed": 105
+      }
+    },
+    {
+      "characterId": "boba",
+      "role": "Attack",
+      "baseStats": {
+        "maxHp": 200,
+        "speed": 105
+      }
+    },
+    {
+      "characterId": "charles",
+      "role": "Attack",
+      "baseStats": {
+        "maxHp": 250,
+        "speed": 105
+      }
+    },
+    {
+      "characterId": "polun",
+      "role": "Defence",
+      "baseStats": {
+        "maxHp": 350,
+        "speed": 85
+      }
+    },
+    {
+      "characterId": "bellu",
+      "role": "Defence",
+      "baseStats": {
+        "maxHp": 450,
+        "speed": 85
+      }
+    },
+    {
+      "characterId": "rr",
+      "role": "Support",
+      "baseStats": {
+        "maxHp": 150,
+        "speed": 115
+      }
+    },
+    {
+      "characterId": "lessone",
+      "role": "Support",
+      "baseStats": {
+        "maxHp": 150,
+        "speed": 115
+      }
+    }
+  ]
+}

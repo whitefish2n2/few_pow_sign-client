@@ -19,11 +19,13 @@ public class AlertManager : MonoSingleton<AlertManager>
     protected override void Initialize()
     { }
 
-    public void AlertError(ErrorResponse response)
+    public void AlertError(ErrorResponse response, Action onClickClose = null)
     {
         var modal = Instantiate(defaultErrorModal, gameObject.transform, false);
         DefaultErrorModal modalCode = modal.GetComponent<DefaultErrorModal>();;
         modalCode.Alert(response);
+        if (onClickClose != null)
+            modalCode.OnClickClose+=onClickClose;
     }
     
     public void AlertRetryableError(ErrorResponse response, Action onAlertClose = null)

@@ -4,6 +4,7 @@ using Codes;
 using Codes.OutGame.Match;
 using MapFile.MapCode;
 using NetCode;
+using NetTest;
 using Plugins;
 using UnityEngine;
 
@@ -17,29 +18,41 @@ public class MatchMakeStatic : MonoSingleton<MatchMakeStatic>
     public string gameId;
     public string userWebsocketKey;
     public string userDedicatedServerVerifyKey;
+    
     public Map.MapEnum map;
+    
+    private string score;
+    public GameMode currentGameMode;
+    public string myPublicKey;
+    public int playerTeam;
+    
     
     public string dedicatedBaseUrl;
     public UInt16 dedicatedServerIndex;
-    public List<NewPlayerDto> playerConstructor = new List<NewPlayerDto>();
+    public List<AnotherPlayerInfoDto> playerConstructor = new List<AnotherPlayerInfoDto>();
 
     /// <summary>
     /// NewPlayerDto->현재 자기 자신(플레이어)인지 확인
     /// </summary>
     /// <returns></returns>
-    public bool isCurrentPlayer(NewPlayerDto dto)
+    public bool isCurrentPlayer(AnotherPlayerInfoDto dto)
     {
-        return dto.Id == ClientStatic.Instance.authId;
-    }
-    public bool IsCurrentPlayerById(string id)
-    {
-        return id == ClientStatic.Instance.authId;
+        return dto.id == ClientStatic.Instance.authId;
     }
     protected override void Start()
     {
         //이벤트 구독
-        MatchingWsManager.Instance.OnMatchFound += OnMatchFound;
-        MatchingWsManager.Instance.OnEnsureMatchEnqueue += OnMatchEnqueueEnsured;
+        OutGameWsManager.Instance.OnMatchFound += OnMatchFound;
+        OutGameWsManager.Instance.OnEnsureMatchEnqueue += OnMatchEnqueueEnsured;
+        OutGameWsManager.Instance.OnStartGame += OnGameStart;
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        OutGameWsManager.Instance.OnMatchFound -= OnMatchFound;
+        OutGameWsManager.Instance.OnEnsureMatchEnqueue -= OnMatchEnqueueEnsured;
+        OutGameWsManager.Instance.OnStartGame -= OnGameStart;
     }
 
     /// <summary>
@@ -52,17 +65,28 @@ public class MatchMakeStatic : MonoSingleton<MatchMakeStatic>
         userDedicatedServerVerifyKey = "";
         dedicatedServerIndex = 0;
         map = Map.MapEnum.Test;
+        currentGameMode = GameMode.Custom;
         playerConstructor.Clear();
     }
-    private void OnMatchFound(MatchFoundDto matchFoundDto)
+    private void OnMatchFound(MatchFoundDto dto)
     {
-        gameId = matchFoundDto.gameId;
-        userDedicatedServerVerifyKey = matchFoundDto.sessionVerifyKey;
-        dedicatedServerIndex = Convert.ToUInt16(matchFoundDto.sessionIndex);
-        playerConstructor = matchFoundDto.players;
-        userDedicatedServerVerifyKey = matchFoundDto.sessionVerifyKey;
-        map = matchFoundDto.map;
+        gameId = dto.gameId;
+        playerConstructor = dto.teamPlayers;
+        Enum.TryParse(dto.map, out map );
+        Enum.TryParse(dto.gameMode, out currentGameMode);
         
+        playerTeam = dto.teamInfo;
+        
+    }
+
+    private void OnGameStart(StartGameDto startGameDto)
+    {
+        gameId = startGameDto.gameId;
+        userDedicatedServerVerifyKey = startGameDto.sessionVerifyKey;
+        dedicatedServerIndex = Convert.ToUInt16(startGameDto.sessionIndex);
+        playerConstructor = startGameDto.players;
+        dedicatedBaseUrl = startGameDto.url;
+        map = startGameDto.map;
     }
 
     private void OnMatchEnqueueEnsured(EnsureMatchEnqueueDto matchEnqueueDto)

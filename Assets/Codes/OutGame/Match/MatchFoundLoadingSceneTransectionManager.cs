@@ -6,12 +6,11 @@ using UnityEngine;
 /// <summary>
 /// OutGameMatchController의 OnMatchFoundAction을 구독해서 특정 초 후에 씬 넘기는 작업을 수행하는 모노비헤이비어
 /// </summary>
-public class LoadingSceneTransectionManager : MonoBehaviour
+public class MatchFoundLoadingSceneTransectionManager : MonoBehaviour
 {
     [SerializeField] private float loadTerm;
     private void Start()
     {
-        
         OutGameMatchController.Instance.OnMatchFoundAction += Transection;
     }
 

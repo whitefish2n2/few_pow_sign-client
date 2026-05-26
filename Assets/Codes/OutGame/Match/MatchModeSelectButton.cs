@@ -8,6 +8,6 @@ public class MatchModeSelectButton : MonoBehaviour
     public void Click()
     {
         if(OutGameMatchController.IsInitialized)
-            MatchingWsManager.Instance.ChangeGameMode(currentGameMode);
+            OutGameWsManager.Instance.ChangeGameMode(currentGameMode);
     }
 }

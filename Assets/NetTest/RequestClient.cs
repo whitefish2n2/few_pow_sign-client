@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Codes;
+using Codes.OutGame.LoginUi.Dto;
 using Codes.Util;
 using Cysharp.Threading.Tasks;
 using NetCode;
@@ -42,6 +43,7 @@ namespace NetTest
         
         public async UniTask SignIn(Action<ApiResponse<SignInResponseDto>> onSuccess, Action<ErrorResponse> onFail,Action onTimeOut, SignInDto dto)
         {
+            ClientStatic.Instance.authId = dto.ID;
             const string endPoint = "/auth/signin";
             var url = new UrlBuilder(ClientStatic.Instance.MatchServerBaseUrl).SetPort(ClientStatic.Instance.MatchServerPort).SetEndPoint(endPoint).Build();
             await HandlePostRequest(url,onSuccess,onFail,onTimeOut,dto,"SignIn",15);
@@ -128,22 +130,6 @@ namespace NetTest
         }
         
         
-        /// <summary>
-        /// Matching 웹소켓 서버 url로 만들어진 웹소켓 객체를 반환해요.
-        /// </summary>
-        /// <param name="gameModeIndex">게임 모드에요</param>
-        /// <returns></returns>
-        public WebSocket GetMatchWebsocket()
-        {
-            const string endPoint = "/match-wait";
-
-            string url = new UrlBuilder(ClientStatic.Instance.MatchWebsocketBaseUrl)
-                .SetPort(ClientStatic.Instance.MatchServerPort)
-                .SetEndPoint(endPoint)
-                .AddParam("token", TokenHolder.instance.GetJwt())
-                .Build();// $"{ClientStatic.Instance.MatchWebsocketBaseUrl}/match-wait?token={TokenHolder.instance.GetJwt()}&gameMode={gameModeIndex}";
-            return new NativeWebSocket.WebSocket(url);
-        }
         public WebSocket GetMatchWebsocket(string token)
         {
             const string endPoint = "/match-wait";
@@ -155,6 +141,13 @@ namespace NetTest
             return new NativeWebSocket.WebSocket(url, new Dictionary<string, string>{{"Authorization", "Bearer " + token}});
         }
         
+        public async UniTask GetPlayerPrivateInfo(Action<ApiResponse<PlayerPrivateInformationDto>> onSuccess, Action<ErrorResponse> onFail,Action onTimeOut)
+        {
+            const string endPoint = "/user/getCurrentPlayerInformation";
+            var url = new UrlBuilder(ClientStatic.Instance.MatchServerBaseUrl).SetPort(ClientStatic.Instance.MatchServerPort).SetEndPoint(endPoint).Build();
+            var dto = "GetPlayerPrivateInfo";
+            await HandleGetRequest(url,onSuccess,onFail,onTimeOut,dto,15);
+        }
         public async UniTask GetInventoryItem()
         {
             throw new NotImplementedException();
@@ -196,7 +189,12 @@ namespace NetTest
                         Debug.LogError($"[{indicator}] Error:{response.StatusCode}");
                         if (errorResponse.code == (int)ExceptionCode.InvalidJwtException && TokenHolder.instance.GetJwt() != null && TokenHolder.instance.GetRefreshToken() != null)
                         {
-                            await RefreshJwtInternal();
+                            bool refreshSuccess = await RefreshJwtInternal();
+                            if (refreshSuccess)
+                            {
+                                await HandlePostRequest<T>(url,onSuccess,onFail,onTimeOut,sendData,indicator,timeOutTime);
+                                return;
+                            }
                         }
                     }
                     else
@@ -218,7 +216,7 @@ namespace NetTest
                 onFail.Invoke(ErrorResponse.NotDefined(indicator));
             }
         }
-        public static async UniTask HandleGetRequest<T>(string url,
+        public async UniTask HandleGetRequest<T>(string url,
             Action<T> onSuccess
             , Action<ErrorResponse> onFail
             , Action onTimeOut,
@@ -242,7 +240,18 @@ namespace NetTest
                     var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseBody);
                     if (errorResponse != null)
                     {
+                        
+                        //Jwt Refresh 시도 후 재요청
                         Debug.LogError($"[{indicator}] Error:{response.StatusCode}");
+                        if (errorResponse.code == (int)ExceptionCode.InvalidJwtException && TokenHolder.instance.GetJwt() != null && TokenHolder.instance.GetRefreshToken() != null)
+                        {
+                            bool refreshSuccess = await RefreshJwtInternal();
+                            if (refreshSuccess)
+                            {
+                                await HandleGetRequest<T>(url,onSuccess,onFail,onTimeOut,indicator,timeOutTime);
+                                return;
+                            }
+                        }
                     }
                     else
                     {

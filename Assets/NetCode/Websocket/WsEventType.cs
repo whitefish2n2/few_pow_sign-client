@@ -12,18 +12,20 @@ namespace NetCode
         
         PickCharacter,
         PickCharacterTemporary,
-        GetPickInformation,
-        
-        //not use
         Cancel,
         
         //server->client
+        JoinLobby,
         Pong,
-        MatchFound,
         EnsureEnqueueMatch,
+        MatchFound,
+        Dodged,
+        StartMatch,
         NotifyCharacterChanged,
         NotifyCharacterPicked,
         PickCharacterFailed,
         PickCharacterSuccess,
+        GameTeamPlayerInformation,//GetGameInformation의 응답
+        CancelSuccess//Cancel 요청의 응답
     }
 }

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Codes.OutGame.PickCharacter;
 using Codes.Util;
+using Cysharp.Threading.Tasks;
 using NetCode;
 using TMPro;
 using UnityEngine;
@@ -17,14 +19,20 @@ namespace Codes.OutGame.Match.LoadingGame
 
         Dictionary<string, LoadingUserElement> userElements = new Dictionary<string, LoadingUserElement>();
 
-        public void LoadPlayerElement(List<NewPlayerDto> dto)
+
+        void Start()
+        {
+            _ = LoadPlayerElement(MatchMakeStatic.Instance.playerConstructor);
+        }
+        public async UniTaskVoid LoadPlayerElement(List<AnotherPlayerInfoDto> dto)
         {
             foreach (var p in dto)
             {
                 var newElement = Instantiate(playerElement, leftPlayerHolder.transform, true);//dto에 team도 받자
                 var elementComponent = newElement.GetComponent<LoadingUserElement>();
-                userElements.Add(p.Id, elementComponent);
-                elementComponent.SetPlayer(null,p.Name);//todo: PlayerDto 손봐서 유저 아이콘같은 정보도ㅗ받게하죠, 아니면 플레이어 캐릭터 사진을 어디 매니저를 만들ㅇ서 관리하던가
+                userElements.Add(p.id, elementComponent);
+                Sprite sprite = await ReusableSpriteHolder.Instance.GetCharacterPortraitSprite(p.characterId);
+                elementComponent.SetPlayer(sprite,p.name);//todo: PlayerDto 손봐서 유저 아이콘같은 정보도ㅗ받게하죠, 아니면 플레이어 캐릭터 사진을 어디 매니저를 만들ㅇ서 관리하던가
             }
         }
 

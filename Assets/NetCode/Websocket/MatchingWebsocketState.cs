@@ -3,9 +3,10 @@ namespace NetCode
     public enum MatchingWebsocketState
     {
         Connecting,
-        Wait,
+        MatchWait,
         Pick,
         Loading,
         Close,
+        Lobby
     }
 }

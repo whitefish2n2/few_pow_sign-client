@@ -178,6 +178,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -334,6 +335,18 @@ MonoBehaviour:
   pickButton: {fileID: 7222464331330390603}
   pickButtonRect: {fileID: 8501815397744732064}
   isClickable: 0
+  localizedName:
+    m_TableReference:
+      m_TableCollectionName: GUID:33a3683b154b2354f8738fa74adca2b7
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &5001123991364016798
 MonoBehaviour:
   m_ObjectHideFlags: 0

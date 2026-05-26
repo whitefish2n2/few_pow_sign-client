@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
-
+#if UNITY_EDITOR
 namespace Codes.Util
 {
     public class MapExporterWindow : EditorWindow
@@ -316,3 +316,4 @@ namespace Codes.Util
         }
     }
 }
+#endif

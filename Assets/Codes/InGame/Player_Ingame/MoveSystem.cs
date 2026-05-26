@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Codes.InGame;
 using Codes.InGame.Player_Ingame;
+using Codes.Util;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -116,5 +117,11 @@ public class MoveSystem : Mover
     public void MouseMove(InputAction.CallbackContext context)
     {
         _mouseDelta = context.ReadValue<Vector2>();
+    }
+
+    public override string Serialize()
+    {
+//        throw new NotImplementedException();
+        return "";
     }
 }

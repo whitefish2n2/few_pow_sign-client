@@ -10,6 +10,7 @@ namespace Codes.OutGame.Modal
         [SerializeField] private TextMeshProUGUI errorCodeUGUI;
         [SerializeField] private TextMeshProUGUI errorBodyUGUI;
         private CanvasGroup modalCanvasGroup;
+        public event Action OnClickClose;
         public void Alert(ErrorResponse response)
         {
             gameObject.SetActive(true);
@@ -18,7 +19,13 @@ namespace Codes.OutGame.Modal
         }
         public void ClickClose()
         {
+            OnClickClose?.Invoke();
             gameObject.SetActive(false);
+        }
+
+        public void ClickQuitGame()
+        {
+            Application.Quit();
         }
     }
 }

@@ -14,7 +14,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
   m_GUID: cdeebd34da5f152458d1211f4eccf0bc
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 126e33d5ed818fd468e3a3daf73d86cf
+    m_Address: Assets/sprite/sprite_character_portrait_tester
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1efa5ff27604b5d4eae93567d4a383a8
+    m_Address: Assets/CharacterData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 223d376f70fd4e14e93fc3556e9da48f
+    m_Address: Assets/sprite/sprite_character_portrait_charles
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3837289bf9f66ec4480b59d698f72866
+    m_Address: Assets/sprite/sprite_character_portrait_bellu
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e66b021a5bd7bb41a736772ee1753b2
+    m_Address: Assets/sprite/sprite_character_portrait_boba
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99c9b0cf35bb26b46a82607839fdf147
+    m_Address: Assets/sprite/sprite_character_portrait_polun
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8693f4ce6f11b4449234cefe9cf6d00
+    m_Address: Assets/sprite/sprite_character_portrait_rr
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed85f2dcd9a661b4e849305dda97a30e
+    m_Address: Assets/sprite/sprite_character_portrait_lessone
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 746e4da9603d20c4f94911f8217b62bf, type: 2}
   m_SchemaSet:

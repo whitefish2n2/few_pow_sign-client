@@ -1,4 +1,5 @@
 using System;
+using Codes.InGame;
 using Codes.Util;
 using NetCode;
 using NetTest;
@@ -19,60 +20,86 @@ namespace Codes.OutGame.Match
         
         public event Action OnMatchFoundAction;
         public event Action OnMatchCanceledAction;
-        public event Action OnMatchingStart;
+        public event Action OnMatchMakingStart;
 
         public event Action OnMatchTimout;
 
         private void Start()
         {
-            MatchingWsManager.Instance.PrepareToNewMatch();
+            OutGameWsManager.Instance.PrepareToNewMatch();
             MatchMakeStatic.Instance.PrepareToNewMatch();
+            InGameLogicStatic.Instance.PrepareToNewMatch();
+            PickFlowStatic.Instance.PrepareToNewMatch();
             
             //이벤트 구독
-            MatchingWsManager.Instance.OnMatchCanceled += OnMatchCancelled;
-            MatchingWsManager.Instance.OnMatchFound += OnMatchFound;
-            MatchingWsManager.Instance.OnTimeout += OnTimeout;
+            
+            DeSubscribeEvents();
+            OutGameWsManager.Instance.OnMatchMakingStarted += OnMatchMakingStarted;
+            OutGameWsManager.Instance.OnMatchCanceled += OnMatchCancelled;
+            OutGameWsManager.Instance.OnMatchFound += OnMatchFound;
+            OutGameWsManager.Instance.OnTimeout += OnTimeout;
+            OutGameWsManager.Instance.OnForcedLogout += GoToLoginSceneEvent;
+            OutGameWsManager.Instance.OnConnectionFatalError += GoToLoginSceneEvent;
         }
 
-        private void OnMatchFound(MatchFoundDto matchFoundDto)
+        private void DeSubscribeEvents()
         {
+            if (OutGameWsManager.TryGetInstance(out var wsManager))
+            {
+                wsManager.OnMatchMakingStarted -= OnMatchMakingStarted;
+                wsManager.OnMatchCanceled -= OnMatchCancelled;
+                wsManager.OnMatchFound -= OnMatchFound;
+                wsManager.OnTimeout -= OnTimeout;
+                wsManager.OnForcedLogout -= GoToLoginSceneEvent;
+                wsManager.OnConnectionFatalError -= GoToLoginSceneEvent;
+            }
+        }
+        private void OnMatchFound(MatchFoundDto startGameDto)
+        {
+            if (this == null) return;
+            
             OnMatchFoundAction?.Invoke();
         }
 
         private void OnMatchCancelled()
         {
+            if (this == null) return;
+            
             OnMatchCanceledAction?.Invoke();
         }
 
-        private void OnMatchStart()
+        private void OnMatchMakingStarted()
         {
-            OnMatchingStart?.Invoke();
+            if (this == null) return;
+            Debug.Log("MatchMaking Start On MatchingUIManager");
+            OnMatchMakingStart?.Invoke();
         }
 
         private void OnTimeout()
         {
+            if (this == null) return;
+            
             ClientMonoStatic.Instance.HandleCriticalOrShouldLoginError(ErrorResponse.ServerTimeout);
             OnMatchTimout?.Invoke();
+        }
+
+        private void GoToLoginSceneEvent(string message)
+        {
+            ClientMonoStatic.Instance.HandleCriticalOrShouldLoginError(new ErrorResponse(500, message));
         }
         
         public void Match()
         {
-            OnMatchStart();
-            _ = MatchingWsManager.Instance.Match(15);
+            _ = OutGameWsManager.Instance.Match(15);
         }
 
         public void Cancel()
         { 
-            MatchingWsManager.Instance.Cancel();
+            _ = OutGameWsManager.Instance.Cancel();
         }
         protected override void OnDestroy()
         {
-            
-            if (MatchingWsManager.TryGetInstance(out var wsManager))
-            {
-                wsManager.OnMatchCanceled -= OnMatchCancelled;
-                wsManager.OnMatchFound -= OnMatchFound;
-            }
+            DeSubscribeEvents();
             
             base.OnDestroy();
         }

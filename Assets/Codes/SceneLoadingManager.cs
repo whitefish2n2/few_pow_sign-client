@@ -82,7 +82,7 @@ public class SceneLoadingManager : MonoSingleton<SceneLoadingManager>
 }
 public enum SceneEnum
 {
-    Loading,//not exist
+    Loading,
     LoginUi,
     OutgameSkeleton,
     LoadingPickScene,

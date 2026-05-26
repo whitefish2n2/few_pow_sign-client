@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -147,7 +148,6 @@ GameObject:
   - component: {fileID: 941689838264288850}
   - component: {fileID: 4735684260125999417}
   - component: {fileID: 7802389189151807596}
-  - component: {fileID: 8592081879600059109}
   m_Layer: 5
   m_Name: UserPortrait
   m_TagString: Untagged
@@ -214,21 +214,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8592081879600059109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3082777335586136578}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 480b743174786ae45911e568cd8fc4fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  portrait: {fileID: 7802389189151807596}
-  loadingBar: {fileID: 6372256543994858329}
-  userName: {fileID: 4153495136662376974}
 --- !u!1 &4017061063051139186
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,6 +224,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4567122318343319909}
   - component: {fileID: 5391309036458603233}
+  - component: {fileID: 7443381606002849032}
   m_Layer: 5
   m_Name: UserElement
   m_TagString: Untagged
@@ -274,6 +260,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4017061063051139186}
   m_CullTransparentMesh: 1
+--- !u!114 &7443381606002849032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4017061063051139186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 480b743174786ae45911e568cd8fc4fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portrait: {fileID: 7802389189151807596}
+  loadingBar: {fileID: 6372256543994858329}
+  userName: {fileID: 4153495136662376974}
 --- !u!1 &4768839143607445101
 GameObject:
   m_ObjectHideFlags: 0

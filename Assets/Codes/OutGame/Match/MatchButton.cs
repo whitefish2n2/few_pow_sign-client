@@ -14,6 +14,7 @@ namespace Codes.OutGame.Match
         private Button button;
         private Coroutine currentCoroutine;
         private TextMeshProUGUI buttonText;
+        private OutGameMatchController cachedController;
 
         private void Awake()
         {
@@ -26,7 +27,8 @@ namespace Codes.OutGame.Match
             
             if (OutGameMatchController.IsInitialized)
             {
-                OutGameMatchController.Instance.OnMatchingStart += BeMatching;
+                cachedController = OutGameMatchController.Instance;
+                OutGameMatchController.Instance.OnMatchMakingStart += BeMatchMaking;
                 OutGameMatchController.Instance.OnMatchCanceledAction += MatchCancel;
                 OutGameMatchController.Instance.OnMatchFoundAction += OnMatchFound;
             }
@@ -40,7 +42,6 @@ namespace Codes.OutGame.Match
             {
                 if (OutGameMatchController.IsInitialized)
                     OutGameMatchController.Instance.Match();
-                isMatching = true;
             }
             else
             {
@@ -49,9 +50,10 @@ namespace Codes.OutGame.Match
             
         }
 
-        private void BeMatching()
+        private void BeMatchMaking()
         {
             currentCoroutine = StartCoroutine(Matching());
+            isMatching = true;
         }
 
         private int second = 0;
@@ -82,11 +84,11 @@ namespace Codes.OutGame.Match
         private void OnDestroy()
         {
             
-            if (OutGameMatchController.TryGetInstance(out var matchController))
+            if (cachedController != null)
             {
-                matchController.OnMatchingStart -= BeMatching;
-                matchController.OnMatchCanceledAction -= MatchCancel;
-                matchController.OnMatchFoundAction -= OnMatchFound;
+                cachedController.OnMatchMakingStart -= BeMatchMaking;
+                cachedController.OnMatchCanceledAction -= MatchCancel;
+                cachedController.OnMatchFoundAction -= OnMatchFound;
             }
             
         }

@@ -18,16 +18,7 @@ namespace Codes.OutGame.Match
                 EventSystem.current.SetSelectedGameObject(null);
             });
         }
-
-        private void Start()
-        {
-            CharacterPickInterface.Instance.RegisterSelectButton(this);
-        }
-
-        public void Click()
-        {
-            CharacterPickInterface.Instance.SelectButton();
-        }
+        
 
         public void BeUnClickable()
         {

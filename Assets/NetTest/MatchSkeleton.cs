@@ -26,7 +26,7 @@ namespace NetTest
 
                 websocket.OnOpen += async () =>
                 {
-                    await websocket.SendText("fuck you server from client");
+                    await websocket.SendText("hello server from client");
                     Debug.Log("Connection open!");
                 };
 
@@ -59,7 +59,7 @@ namespace NetTest
 
         public async void Cancel()
         {
-            await websocket.SendText(JsonConvert.SerializeObject(new WsEventDto{Type = WsEventType.Cancel,Message = ""}));
+            await websocket.SendText(JsonConvert.SerializeObject(WsEventDto.CancelMatch()));
         }
     }
 }

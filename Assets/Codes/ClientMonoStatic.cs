@@ -47,7 +47,7 @@ public class ClientMonoStatic : MonoSingleton<ClientMonoStatic>
                 SceneEnum.Loading,
                 () => { },
                 null,
-                async () => { AlertManager.Instance.AlertRetryableError(errorResponse); }
+                async () => { AlertManager.Instance.AlertError(errorResponse); }
             );
         }
         catch (Exception e)

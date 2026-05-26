@@ -1,8 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Codes.Character;
 using Codes.OutGame.Match;
 using Codes.OutGame.PickCharacter;
+using Codes.OutGame.PickCharacter.Dto;
 using Codes.Util;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -10,9 +15,13 @@ using UnityEngine;
 /// </summary>
 public class CharacterPickInterface : MonoBungleton<CharacterPickInterface>
 {
+    [SerializeField] private GameObject atkBox;
+    [SerializeField] private GameObject defBox;
+    [SerializeField] private GameObject supBox;
+    [SerializeField] private GameObject elementPrefab;
     private Dictionary<string, PickCharacterElement> characters = new Dictionary<string, PickCharacterElement>();
 
-    private SelectButton selectButton;
+    private LockInButton lockInButton;
     private string currentSelected = "";//현재 선택된 캐릭터 id
     private string currentWatching = "";//지금 보는 캐릭터 id
     protected override void Initialize()
@@ -28,14 +37,52 @@ public class CharacterPickInterface : MonoBungleton<CharacterPickInterface>
         characters.Add(characterId, element);
     }
 
-    public void RegisterSelectButton(SelectButton b)
+    private async void Start()
     {
-        selectButton = b;
+        CharacterPickSceneManager.Instance.SomeonePickCharacter += BeSelectedElement;
+        var characterList =CharacterInfoLoader.Instance.GetCharacterDataList();
+        foreach (var character in characterList)
+        {
+            CharacterRole role = CharacterRoleExtensions.ToRoleEnum(character.role);
+            if (CharacterRole.attack == role)
+            {
+                var obj = Instantiate(elementPrefab, atkBox.transform);
+                var comp = obj.GetComponent<PickCharacterElement>();
+                comp.SetCharacterKey(character.characterId);
+                _ = SetElementSprite(comp,character.characterId);
+            }
+            if (CharacterRole.defense == role)
+            {
+                var obj = Instantiate(elementPrefab, defBox.transform);
+                var comp = obj.GetComponent<PickCharacterElement>();
+                comp.SetCharacterKey(character.characterId);
+                _ = SetElementSprite(comp,character.characterId);
+            }
+            if (CharacterRole.support == role)
+            {
+                var obj = Instantiate(elementPrefab, supBox.transform);
+                var comp = obj.GetComponent<PickCharacterElement>();
+                comp.SetCharacterKey(character.characterId);
+                _ = SetElementSprite(comp,character.characterId);
+            }
+        }
     }
 
-    public void BeSelectedElement(string characterId)
+    async UniTaskVoid SetElementSprite(PickCharacterElement element,  string characterId)
     {
-        if (characters.TryGetValue(characterId, out PickCharacterElement element))
+        var sprite = await ReusableSpriteHolder.Instance.GetCharacterPortraitSprite(characterId);
+        element.ChangeCharacterPortrait(sprite);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        CharacterPickSceneManager.Instance.SomeonePickCharacter -= BeSelectedElement;
+    }
+
+    public void BeSelectedElement(CharacterPickNotifyDto dto)
+    {
+        if (characters.TryGetValue(dto.characterId, out PickCharacterElement element))
         {
             element.BeUnClickable();
         }
@@ -51,35 +98,15 @@ public class CharacterPickInterface : MonoBungleton<CharacterPickInterface>
             element.BeClickable();
         }
     }
-
-    public void SelectCharacterFromPlayer(string characterId)
-    {
-        currentSelected = characterId;
-        if (currentSelected == currentWatching)
-        {
-            selectButton.BeUnClickable();
-        }
-    }
-
-    public void SelectCharacterTemporaryFromPlayer(string characterId)
-    {
-        currentWatching = characterId;
-        if (currentSelected == currentWatching)
-        {
-            selectButton.BeUnClickable();
-        }
-    }
+    
     public void ClickCharacter(string characterId)
     {
         _ = CharacterPickSceneManager.Instance.ClickCharacter(characterId);
     }
 
-    public void SelectButton()
+    public void LockInCharacter(string characterId)
     {
-        if (currentSelected != "")
-        {
-            
-        }
-        else return;
+        _ = CharacterPickSceneManager.Instance.LockInCharacter(characterId);
     }
+    
 }

@@ -149,4 +149,9 @@ public class Weapon : Mover
         animator.SetTrigger(Fire);
         handleWeaponAnimator.SetTrigger(Fire);
     }
+
+    public override string Serialize()
+    {
+        throw new NotImplementedException();
+    }
 }

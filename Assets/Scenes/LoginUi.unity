@@ -2087,6 +2087,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 413566541}
   m_CullTransparentMesh: 1
+--- !u!1 &433360007
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 433360009}
+  - component: {fileID: 433360008}
+  m_Layer: 0
+  m_Name: ClientMonoStatic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &433360008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433360007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 642b500c0c450654499c5f9ebcd3f618, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClientMonoStatic
+--- !u!4 &433360009
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433360007}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 514.60455, y: 353.94934, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &490077547
 GameObject:
   m_ObjectHideFlags: 0
@@ -6986,6 +7030,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: AlertCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3941291753653001643, guid: 6e3ca36ffa368ba4197612e9c5c755e0, type: 3}
+      propertyPath: defaultAlertModal
+      value: 
+      objectReference: {fileID: 1495156249271525488, guid: cabf1da30fa096c4cafccf469325f80a, type: 3}
+    - target: {fileID: 3941291753653001643, guid: 6e3ca36ffa368ba4197612e9c5c755e0, type: 3}
+      propertyPath: defaultErrorModal
+      value: 
+      objectReference: {fileID: 1495156249271525488, guid: cabf1da30fa096c4cafccf469325f80a, type: 3}
     - target: {fileID: 4629235608940083631, guid: 6e3ca36ffa368ba4197612e9c5c755e0, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -7797,3 +7849,4 @@ SceneRoots:
   - {fileID: 507270805}
   - {fileID: 4092453961660648557}
   - {fileID: 131753181}
+  - {fileID: 433360009}

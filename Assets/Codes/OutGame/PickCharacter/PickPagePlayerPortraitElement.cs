@@ -18,11 +18,20 @@ public class PickPagePlayerPortraitElement : MonoBehaviour
     [SerializeField] protected Outline outline;
     public LocalizedString nameLocal;
 
-    public void Awake()
+    private void OnEnable()
     {
-        nameLocal.StringChanged += value => { characterNameField.text = value; };
+        nameLocal.StringChanged += UpdateCharacterName;
     }
 
+    private void OnDisable()
+    {
+        nameLocal.StringChanged -= UpdateCharacterName;
+    }
+    private void UpdateCharacterName(string value)
+    {
+        if (characterNameField != null)
+            characterNameField.text = value;
+    }
     public void SetUserName(string name)
     {
         nameField.text = name;
@@ -30,6 +39,10 @@ public class PickPagePlayerPortraitElement : MonoBehaviour
     
     public void SetCharacterKey(string key)
     {
+        if (!key.StartsWith("local_character_name_"))
+        {
+            key =  "local_character_name_" + key;
+        }
         nameLocal.TableEntryReference = key;
         nameLocal.RefreshString();
     }
@@ -38,5 +51,9 @@ public class PickPagePlayerPortraitElement : MonoBehaviour
     {
         portraitImage.sprite = portrait;
     }
-    public void Pick(){}
+
+    public void LockIn()
+    {
+        portraitImage.color = Color.white;
+    }
 }

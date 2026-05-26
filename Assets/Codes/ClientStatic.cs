@@ -18,6 +18,7 @@ namespace Codes
         public string authId;
         public string authPassword;//todo: 굳이 static에 저장할필요 없을듯
         public string authName;
+        public long accountCreatedAt;
 
         public string dedicatedBaseUrl;
     }

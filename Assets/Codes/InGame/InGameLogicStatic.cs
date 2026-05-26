@@ -7,43 +7,28 @@ namespace Codes.InGame
 {
     public class InGameLogicStatic : MonoSingleton<InGameLogicStatic>
     {
-        public Dictionary<int,Player> Players = new();
+        public Dictionary<int,Player> players = new();
         
-        public Dictionary<string,Mover> IngameMovers = new();
-        private string score;
-
+        public Dictionary<string,Mover> ingameMovers = new();
+        
+        
         protected override void Initialize()
         {
-            
+            players.Clear();
+            ingameMovers.Clear();
         }
-        
-        /// <summary>
-        /// 여깄는 score 참조해서 사용해줬음 함
-        /// </summary>
-        public event Action OnScoreChanged;
-        public void ChangeScore(string newScore)
+
+        public void PrepareToNewMatch()
         {
-            score = newScore;
-            OnScoreChanged?.Invoke();
+            players.Clear();
+            ingameMovers.Clear();
         }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
         private Player GetPlayerById(int id)
         {
             try
             {
-                return Players[id];
+                return players[id];
             }
             catch
             {

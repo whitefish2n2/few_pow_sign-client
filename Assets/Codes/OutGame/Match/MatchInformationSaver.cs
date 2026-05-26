@@ -10,7 +10,7 @@ namespace Codes.OutGame.Match
     {
         void Start()
         {
-            MatchingWsManager.Instance.OnMatchFound += HandleAndSaveMatchFound;
+            OutGameWsManager.Instance.OnMatchFound += HandleAndSaveMatchFound;
         }
 
         private void HandleAndSaveMatchFound(MatchFoundDto dto)
@@ -20,7 +20,7 @@ namespace Codes.OutGame.Match
 
         void OnDestroy()
         {
-            MatchingWsManager.Instance.OnMatchFound -= HandleAndSaveMatchFound;
+            OutGameWsManager.Instance.OnMatchFound -= HandleAndSaveMatchFound;
         }
         
     }

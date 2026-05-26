@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
-public class Mover : MonoBehaviour
+using Codes.Util;
+
+public abstract class Mover : ServerComponent
 {
     [HideInInspector]public Rigidbody rb;
     private void Awake()
