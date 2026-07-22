@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "PlayerIngame",
     "maps": [
         {
@@ -72,6 +73,15 @@
                     "name": "Right Click",
                     "type": "Button",
                     "id": "d6c4c479-2ad8-47a3-a043-f1359680845f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "c07c4f34-9236-4647-a200-dd482f77352d",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -208,6 +218,17 @@
                     "processors": "",
                     "groups": ";PC",
                     "action": "Right Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "69e30d70-b48c-461a-a4e1-f2d95298ba8b",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
