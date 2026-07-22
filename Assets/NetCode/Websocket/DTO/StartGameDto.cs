@@ -8,9 +8,9 @@ namespace NetCode
     public class StartGameDto
     {
         public string gameId;
-        public string sessionVerifyKey;
         public string sessionIndex;
-        public string url;
+        public string udpIp;
+        public int udpPort;
         [JsonConverter(typeof(StringEnumConverter))]
         public Map.MapEnum map;
         public List<AnotherPlayerInfoDto> players;

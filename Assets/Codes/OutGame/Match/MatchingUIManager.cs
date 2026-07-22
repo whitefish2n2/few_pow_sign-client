@@ -4,6 +4,7 @@ using Codes.Util;
 using NetCode;
 using NetTest;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Button = UnityEngine.UIElements.Button;
 
@@ -96,6 +97,11 @@ namespace Codes.OutGame.Match
         public void Cancel()
         { 
             _ = OutGameWsManager.Instance.Cancel();
+        }
+        
+        public void LogOut(){
+            TokenHolder.instance.Clear();  
+            SceneManager.LoadScene("LoginUi");
         }
         protected override void OnDestroy()
         {

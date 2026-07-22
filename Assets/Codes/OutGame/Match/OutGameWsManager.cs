@@ -97,15 +97,17 @@ namespace Codes.OutGame.Match
         public async UniTask ClickCharacter(string characterId)
         {
             if (ws == null) return;
-            var selectDto = new TryCharacterPickDto {characterId = characterId};
+            var id = CharacterInfoLoader.Instance.CharacterIdToId(characterId);
+            var selectDto = new TryCharacterPickDto { characterId = id.ToString() };
             var body = JsonConvert.SerializeObject(WsEventDto.SelectCharacterTemporary(selectDto));
             await ws.SendText(body).AsUniTask();
         }
 
         public async UniTask LockInCharacter(string characterId)
         {
-            if(ws == null) return;
-            var selectDto = new TryCharacterPickDto {characterId = characterId};
+            if (ws == null) return;
+            var id = CharacterInfoLoader.Instance.CharacterIdToId(characterId);
+            var selectDto = new TryCharacterPickDto { characterId = id.ToString() };
             var body = JsonConvert.SerializeObject(WsEventDto.LockInCharacter(selectDto));
             await ws.SendText(body).AsUniTask();
         }
@@ -273,6 +275,8 @@ namespace Codes.OutGame.Match
                     {
                         Debug.Log("Triggered: StartMatch");
                         var startGameDto = jToken.ToObject<StartGameDto>();
+                        if (startGameDto.players != null)
+                            foreach (var p in startGameDto.players) p.characterId = ResolveCharacterId(p.characterId);
                         OnStartGame?.Invoke(startGameDto);
                         break;
                     }
@@ -294,6 +298,7 @@ namespace Codes.OutGame.Match
                     {
                         Debug.Log("Triggered: NotifyCharacterPicked");
                         var notifyDto = jToken.ToObject<CharacterPickNotifyDto>();
+                        notifyDto.characterId = ResolveCharacterId(notifyDto.characterId);
                         OnCharacterPickNotify?.Invoke(notifyDto);
                         break;
                     }
@@ -301,6 +306,7 @@ namespace Codes.OutGame.Match
                     {
                         Debug.Log("Triggered: NotifyCharacterChanged");
                         var notifyDto = jToken.ToObject<CharacterPickNotifyDto>();
+                        notifyDto.characterId = ResolveCharacterId(notifyDto.characterId);
                         OnCharacterPickTemporaryNotify?.Invoke(notifyDto);
                         break;
                     }
@@ -318,6 +324,7 @@ namespace Codes.OutGame.Match
                     {
                         Debug.Log("Triggered: GameTeamPlayerInformation");
                         var infoDto = jToken.ToObject<List<AnotherPlayerInfoDto>>();
+                        foreach (var p in infoDto) p.characterId = ResolveCharacterId(p.characterId);
                         OnGotTeamPlayerInformation?.Invoke(infoDto);
                         break;
                     }
@@ -325,6 +332,8 @@ namespace Codes.OutGame.Match
                     {
                         Debug.Log("Triggered: MatchFound");
                         var matchFoundDto = jToken.ToObject<MatchFoundDto>();
+                        if (matchFoundDto.teamPlayers != null)
+                            foreach (var p in matchFoundDto.teamPlayers) p.characterId = ResolveCharacterId(p.characterId);
                         OnMatchFound?.Invoke(matchFoundDto);
                         break;
                     }
@@ -474,7 +483,15 @@ namespace Codes.OutGame.Match
 
         public bool IsConnected()
         {
-            return ws.State == WebSocketState.Open;
+            return ws is { State: WebSocketState.Open };
         }
+        
+        private string ResolveCharacterId(string idStr)
+        {
+            if (string.IsNullOrEmpty(idStr)) return idStr;
+            if (!int.TryParse(idStr, out var id)) return idStr;
+            return CharacterInfoLoader.Instance.IdToCharacterId(id);
+        }
+
     }
 }

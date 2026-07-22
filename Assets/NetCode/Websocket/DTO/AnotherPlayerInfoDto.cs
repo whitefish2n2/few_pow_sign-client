@@ -8,6 +8,7 @@ namespace NetCode
     {
         public string id;
         public string name;
+        public int publicKey;
         public string characterId;
         public int team;
         public int kill;

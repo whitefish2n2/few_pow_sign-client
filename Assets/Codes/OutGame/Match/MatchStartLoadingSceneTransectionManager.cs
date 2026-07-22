@@ -24,6 +24,9 @@ public class MatchStartLoadingSceneTransectionManager : MonoBehaviour
     IEnumerator TransectionIE()
     {
         yield return new WaitForSeconds(loadTerm);
-        SceneLoadingManager.Instance.LoadSceneWithLoadingScene(SceneEnum.TestScene, SceneEnum.LoadingMultiGame);
+        SceneLoadingManager.Instance.LoadSceneAsync(SceneEnum.LoadingMultiGame, () => 
+        {
+            Debug.Log("멀티플레이 로딩 씬 진입 완료!");
+        });
     }
 }

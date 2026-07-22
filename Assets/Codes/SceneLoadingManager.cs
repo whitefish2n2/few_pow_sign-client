@@ -89,6 +89,7 @@ public enum SceneEnum
     PickSkeleton,
     LoadingMultiGame,
     TestScene,
+    GameEnd,
     Black,//not exist
 }
 
