@@ -77,7 +77,8 @@ public class CharacterPickInterface : MonoBungleton<CharacterPickInterface>
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        CharacterPickSceneManager.Instance.SomeonePickCharacter -= BeSelectedElement;
+        if(CharacterPickSceneManager.IsInitialized)
+            CharacterPickSceneManager.Instance.SomeonePickCharacter -= BeSelectedElement;
     }
 
     public void BeSelectedElement(CharacterPickNotifyDto dto)

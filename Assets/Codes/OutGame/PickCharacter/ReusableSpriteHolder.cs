@@ -2,19 +2,20 @@ using System;
 using System.Collections.Generic;
 using Codes.Util;
 using Cysharp.Threading.Tasks;
+using Plugins;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace Codes.OutGame.PickCharacter
 {
-    public class ReusableSpriteHolder : MonoBungleton<ReusableSpriteHolder>
+    public class ReusableSpriteHolder : MonoSingleton<ReusableSpriteHolder>
     {
         protected override void Initialize()
         { }
 
         [SerializeField] private SerializableDictionary<string, Sprite> sprites;
         private Dictionary<string, UniTask<Sprite>> loadingTasks = new Dictionary<string, UniTask<Sprite>>();
-
+        private HashSet<Sprite> addressableLoadedSprites = new HashSet<Sprite>();
     
         
         public async UniTask<Sprite> GetSprite(string name)
@@ -50,6 +51,8 @@ namespace Codes.OutGame.PickCharacter
                     if (!sprites.ContainsKey(spriteName))
                     {
                         sprites.Add(new SerializableDictionary<string, Sprite>.Pair(spriteName, sprite));
+                        
+                        addressableLoadedSprites.Add(sprite);
                     }
                 }
                 return sprite;
@@ -70,7 +73,7 @@ namespace Codes.OutGame.PickCharacter
         }
         public void ReleaseAll()
         {
-            foreach (var sprite in sprites.Values)
+            foreach (var sprite in addressableLoadedSprites)
             {
                 Addressables.Release(sprite);
             }

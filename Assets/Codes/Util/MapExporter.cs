@@ -190,64 +190,67 @@ namespace Codes.Util
         // 유니티 네이티브 객체들을 파싱하는 함수들
         private void ExportCollider(GameObject go, StringBuilder sb)
         {
-            Collider col = go.GetComponent<Collider>();
-            if (col == null || !col.enabled) return;
+            var cols = go.GetComponents<Collider>();
+            foreach (var col in cols)
+            {
+                if (!col || !col.enabled) return;
 
-            if (col is BoxCollider box)
-            {
-                sb.AppendLine("COMPONENT: BoxCollider");
-                sb.AppendLine($"IsTrigger: {(box.isTrigger ? "1" : "0")}");
-                sb.AppendLine($"Center: {FormatVec3(box.center)}");
-                sb.AppendLine($"Size: {FormatVec3(box.size)}");
-            }
-            else if (col is SphereCollider sphere)
-            {
-                sb.AppendLine("COMPONENT: SphereCollider");
-                sb.AppendLine($"IsTrigger: {(sphere.isTrigger ? "1" : "0")}");
-                sb.AppendLine($"Center: {FormatVec3(sphere.center)}");
-                sb.AppendLine($"Radius: {sphere.radius:F4}");
-            }
-            else if (col is CapsuleCollider capsule)
-            {
-                sb.AppendLine("COMPONENT: CapsuleCollider");
-                sb.AppendLine($"IsTrigger: {(capsule.isTrigger ? "1" : "0")}");
-                sb.AppendLine($"Center: {FormatVec3(capsule.center)}");
-                sb.AppendLine($"Radius: {capsule.radius:F4}");
-                sb.AppendLine($"Height: {capsule.height:F4}");
-                sb.AppendLine($"Direction: {capsule.direction}");
-            }
-            else if (col is MeshCollider meshCol)
-            {
-                Mesh mesh = meshCol.sharedMesh;
-                if (mesh == null) return;
-                sb.AppendLine("COMPONENT: MeshCollider");
-                sb.AppendLine($"IsTrigger: {(meshCol.isTrigger ? "1" : "0")}");
-                sb.AppendLine($"VertexCount: {mesh.vertexCount}");
-                foreach (Vector3 v in mesh.vertices) sb.AppendLine($"{v.x:F4},{v.y:F4},{v.z:F4}");
-                int[] triangles = mesh.triangles;
-                sb.AppendLine($"TriangleCount: {triangles.Length / 3}");
-                for (int i = 0; i < triangles.Length; i += 3)
-                    sb.AppendLine($"{triangles[i]},{triangles[i+1]},{triangles[i+2]}");
-            }
+                if (col is BoxCollider box)
+                {
+                    sb.AppendLine("COMPONENT: BoxCollider");
+                    sb.AppendLine($"IsTrigger: {(box.isTrigger ? "1" : "0")}");
+                    sb.AppendLine($"Center: {FormatVec3(box.center)}");
+                    sb.AppendLine($"Size: {FormatVec3(box.size)}");
+                }
+                else if (col is SphereCollider sphere)
+                {
+                    sb.AppendLine("COMPONENT: SphereCollider");
+                    sb.AppendLine($"IsTrigger: {(sphere.isTrigger ? "1" : "0")}");
+                    sb.AppendLine($"Center: {FormatVec3(sphere.center)}");
+                    sb.AppendLine($"Radius: {sphere.radius:F4}");
+                }
+                else if (col is CapsuleCollider capsule)
+                {
+                    sb.AppendLine("COMPONENT: CapsuleCollider");
+                    sb.AppendLine($"IsTrigger: {(capsule.isTrigger ? "1" : "0")}");
+                    sb.AppendLine($"Center: {FormatVec3(capsule.center)}");
+                    sb.AppendLine($"Radius: {capsule.radius:F4}");
+                    sb.AppendLine($"Height: {capsule.height:F4}");
+                    sb.AppendLine($"Direction: {capsule.direction}");
+                }
+                else if (col is MeshCollider meshCol)
+                {
+                    Mesh mesh = meshCol.sharedMesh;
+                    if (mesh == null) return;
+                    sb.AppendLine("COMPONENT: MeshCollider");
+                    sb.AppendLine($"IsTrigger: {(meshCol.isTrigger ? "1" : "0")}");
+                    sb.AppendLine($"VertexCount: {mesh.vertexCount}");
+                    foreach (Vector3 v in mesh.vertices) sb.AppendLine($"{v.x:F4},{v.y:F4},{v.z:F4}");
+                    int[] triangles = mesh.triangles;
+                    sb.AppendLine($"TriangleCount: {triangles.Length / 3}");
+                    for (int i = 0; i < triangles.Length; i += 3)
+                        sb.AppendLine($"{triangles[i]},{triangles[i+1]},{triangles[i+2]}");
+                }
 
-            if (col.material != null)
-            {
-                PhysicsMaterial mat = col.material;
-                sb.AppendLine("Material: " + mat.name);
-                sb.AppendLine("StaticFriction: " + mat.staticFriction);
-                sb.AppendLine("DynamicFriction: " + mat.dynamicFriction);
-                sb.AppendLine("Bounciness: " + mat.bounciness);
-                sb.AppendLine("BounceCombine: " + mat.bounceCombine);
-                sb.AppendLine("FrictionCombine: " + mat.frictionCombine);
-            }
-            else
-            {
-                sb.AppendLine("Material: DefaultMaterial");
-                sb.AppendLine("StaticFriction: 0.6");
-                sb.AppendLine("DynamicFriction: 0.6");
-                sb.AppendLine("Bounciness: 0");
-                sb.AppendLine("BounceCombine: " + PhysicsMaterialCombine.Average );
-                sb.AppendLine("FrictionCombine: " + PhysicsMaterialCombine.Average);
+                if (col.material != null)
+                {
+                    PhysicsMaterial mat = col.material;
+                    sb.AppendLine("Material: " + mat.name);
+                    sb.AppendLine("StaticFriction: " + mat.staticFriction);
+                    sb.AppendLine("DynamicFriction: " + mat.dynamicFriction);
+                    sb.AppendLine("Bounciness: " + mat.bounciness);
+                    sb.AppendLine("BounceCombine: " + mat.bounceCombine);
+                    sb.AppendLine("FrictionCombine: " + mat.frictionCombine);
+                }
+                else
+                {
+                    sb.AppendLine("Material: DefaultMaterial");
+                    sb.AppendLine("StaticFriction: 0.6");
+                    sb.AppendLine("DynamicFriction: 0.6");
+                    sb.AppendLine("Bounciness: 0");
+                    sb.AppendLine("BounceCombine: " + PhysicsMaterialCombine.Average );
+                    sb.AppendLine("FrictionCombine: " + PhysicsMaterialCombine.Average);
+                }
             }
         }
         private void ExportRigidbody(GameObject go, StringBuilder sb)

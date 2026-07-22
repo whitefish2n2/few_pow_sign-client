@@ -9,7 +9,7 @@ public class CharacterInfoLoader : MonoSingleton<CharacterInfoLoader>
 {
     // ID로 즉시 검색하기 위한 딕셔너리
     private Dictionary<string, CharacterData> characterDict = new Dictionary<string, CharacterData>();
-
+    private Dictionary<int, CharacterData> idDict = new Dictionary<int, CharacterData>();
     public string CurrentDataVersion { get; private set; }
     public bool IsLoaded { get; private set; } = false;
 
@@ -34,10 +34,11 @@ public class CharacterInfoLoader : MonoSingleton<CharacterInfoLoader>
             CurrentDataVersion = db.dataVersion;
 
             // 딕셔너리에 싹 다 집어넣기
-            characterDict.Clear();
+            idDict.Clear();
             foreach (var charData in db.characterList)
             {
                 characterDict[charData.characterId] = charData;
+                idDict[charData.id] = charData;
             }
 
             IsLoaded = true;
@@ -67,5 +68,22 @@ public class CharacterInfoLoader : MonoSingleton<CharacterInfoLoader>
     public List<CharacterData> GetCharacterDataList()
     {
         return new List<CharacterData>(characterDict.Values);
+    }
+    
+    public CharacterData GetById(int id)
+    {
+        if (idDict.TryGetValue(id, out var data)) return data;
+        Debug.LogError($"존재하지 않는 캐릭터 숫자 id: {id}");
+        return null;
+    }
+    public int CharacterIdToId(string characterId)
+    {
+        var d = GetCharacterData(characterId);
+        return d != null ? d.id : -1;
+    }
+    public string IdToCharacterId(int id)
+    {
+        var d = GetById(id);
+        return d != null ? d.characterId : string.Empty;
     }
 }

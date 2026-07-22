@@ -106,7 +106,7 @@ namespace Codes.OutGame.PickCharacter
         
         protected override void OnDestroy()
         {
-            if (CharacterPickSceneManager.Instance != null)
+            if (CharacterPickSceneManager.IsInitialized)
             {
                 CharacterPickSceneManager.Instance.SomeonePickCharacterTemporary -= HoverCharacter;
                 CharacterPickSceneManager.Instance.SomeonePickCharacter -= LockInCharacter;

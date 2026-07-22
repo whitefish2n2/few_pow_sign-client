@@ -52,8 +52,10 @@ namespace Codes.Character
     [Serializable]
     public class CharacterData
     {
+        public int id;
         public string characterId;
         public string role;
+        public int prefabId;
         public CharacterStats baseStats;
     }
 

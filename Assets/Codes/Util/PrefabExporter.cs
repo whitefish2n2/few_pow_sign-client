@@ -12,7 +12,7 @@ namespace Codes.Util
         // --- [설정 변수] ---
         private GameObject targetObject;
         private bool includeChildren = true;
-
+        private static bool asFootOffset = false;
         // ID 발급용 키
         private const string ID_COUNTER_KEY = "DynamicPrefab_LastID";
 
@@ -50,6 +50,9 @@ namespace Codes.Util
             
             includeChildren = EditorGUILayout.Toggle("Include Children", includeChildren);
             EditorGUILayout.HelpBox("체크 해제 시 자식 오브젝트들을 프리팹과 서버 데이터에서 완전히 제외합니다.", MessageType.None);
+            
+            asFootOffset = EditorGUILayout.Toggle("As Foot Offset", asFootOffset);
+            EditorGUILayout.HelpBox("켜면 서버 데이터에 FootOffset(원점→발 거리)을 기록합니다.", MessageType.None);
             
             int nextId = EditorPrefs.GetInt(ID_COUNTER_KEY, 1);
             EditorGUILayout.LabelField($"Next Prefab ID: {nextId}");
@@ -109,6 +112,11 @@ namespace Codes.Util
                 }
             }
 
+            
+            if (asFootOffset) BakeFootPivot(tempObj);
+            
+
+            
             // 4. 클라이언트용 프리팹 에셋 생성 (.prefab)
             GameObject savedPrefab = PrefabUtility.SaveAsPrefabAsset(tempObj, clientPrefabPath);
             
@@ -120,6 +128,41 @@ namespace Codes.Util
                 Debug.LogError("클라이언트 프리팹 저장에 실패했습니다: " + clientPrefabPath);
                 return;
             }
+            
+            string mapAssetPath = "Assets/DynamicPrefab/IdToPrefab.asset";
+            IdToPrefabMap idMap = AssetDatabase.LoadAssetAtPath<IdToPrefabMap>(mapAssetPath);
+
+            
+            // 매핑 파일이 없으면 새로 생성
+            if (idMap == null)
+            {
+                idMap = ScriptableObject.CreateInstance<IdToPrefabMap>();
+                AssetDatabase.CreateAsset(idMap, mapAssetPath);
+                Debug.Log($"<color=cyan>[ID Mapping]</color> 새로운 IdToPrefab 매핑 에셋을 생성했습니다: {mapAssetPath}");
+            }
+
+            // 기존 매핑 업데이트 또는 새 매핑 추가
+            bool isUpdated = false;
+            for (int i = 0; i < idMap.mappings.Count; i++)
+            {
+                if (idMap.mappings[i].id == currentId)
+                {
+                    var map = idMap.mappings[i];
+                    map.prefab = savedPrefab;
+                    idMap.mappings[i] = map; // struct 갱신
+                    isUpdated = true;
+                    break;
+                }
+            }
+
+            if (!isUpdated)
+            {
+                idMap.mappings.Add(new PrefabMapping { id = currentId, prefab = savedPrefab });
+            }
+
+            // 변경사항 저장 (매우 중요)
+            EditorUtility.SetDirty(idMap);
+            AssetDatabase.SaveAssets();
 
             // 5. 서버용 텍스트 파일 (.objectPrefab) 추출 작성 -> GameObjectArgument 구조에 대응
             StringBuilder sb = new StringBuilder();
@@ -127,6 +170,7 @@ namespace Codes.Util
             sb.AppendLine("[SECTION: HEADER]");
             sb.AppendLine($"PrefabID: {currentId}");
             sb.AppendLine($"PrefabName: {fileName}");
+            
             sb.AppendLine();
             
             sb.AppendLine("[SECTION: OBJECTS]");
@@ -152,7 +196,6 @@ namespace Codes.Util
                 sb.AppendLine($"Position: {FormatVec3(t.position)}");
                 sb.AppendLine($"Rotation: {FormatQuat(t.rotation)}");
                 sb.AppendLine($"Scale: {FormatVec3(t.lossyScale)}");
-
                 ExportCollider(go, sb);
                 ExportRigidbody(go, sb);
                 ExportServerComponents(go, sb);
@@ -181,44 +224,67 @@ namespace Codes.Util
         // --- 파싱 헬퍼 함수들 ---
         private static void ExportCollider(GameObject go, StringBuilder sb)
         {
-            Collider col = go.GetComponent<Collider>();
-            if (col == null || !col.enabled) return;
+            var cols = go.GetComponents<Collider>();
+            foreach (var col in cols)
+            {
+                if (!col || !col.enabled) return;
 
-            if (col is BoxCollider box)
-            {
-                sb.AppendLine("COMPONENT: BoxCollider");
-                sb.AppendLine($"IsTrigger: {(box.isTrigger ? "1" : "0")}");
-                sb.AppendLine($"Center: {FormatVec3(box.center)}");
-                sb.AppendLine($"Size: {FormatVec3(box.size)}");
-            }
-            else if (col is SphereCollider sphere)
-            {
-                sb.AppendLine("COMPONENT: SphereCollider");
-                sb.AppendLine($"IsTrigger: {(sphere.isTrigger ? "1" : "0")}");
-                sb.AppendLine($"Center: {FormatVec3(sphere.center)}");
-                sb.AppendLine($"Radius: {sphere.radius:F4}");
-            }
-            else if (col is CapsuleCollider capsule)
-            {
-                sb.AppendLine("COMPONENT: CapsuleCollider");
-                sb.AppendLine($"IsTrigger: {(capsule.isTrigger ? "1" : "0")}");
-                sb.AppendLine($"Center: {FormatVec3(capsule.center)}");
-                sb.AppendLine($"Radius: {capsule.radius:F4}");
-                sb.AppendLine($"Height: {capsule.height:F4}");
-                sb.AppendLine($"Direction: {capsule.direction}");
-            }
-            else if (col is MeshCollider meshCol)
-            {
-                Mesh mesh = meshCol.sharedMesh;
-                if (mesh == null) return;
-                sb.AppendLine("COMPONENT: MeshCollider");
-                sb.AppendLine($"IsTrigger: {(meshCol.isTrigger ? "1" : "0")}");
-                sb.AppendLine($"VertexCount: {mesh.vertexCount}");
-                foreach (Vector3 v in mesh.vertices) sb.AppendLine($"{v.x:F4},{v.y:F4},{v.z:F4}");
-                int[] triangles = mesh.triangles;
-                sb.AppendLine($"TriangleCount: {triangles.Length / 3}");
-                for (int i = 0; i < triangles.Length; i += 3)
-                    sb.AppendLine($"{triangles[i]},{triangles[i+1]},{triangles[i+2]}");
+                if (col is BoxCollider box)
+                {
+                    sb.AppendLine("COMPONENT: BoxCollider");
+                    sb.AppendLine($"IsTrigger: {(box.isTrigger ? "1" : "0")}");
+                    sb.AppendLine($"Center: {FormatVec3(box.center)}");
+                    sb.AppendLine($"Size: {FormatVec3(box.size)}");
+                }
+                else if (col is SphereCollider sphere)
+                {
+                    sb.AppendLine("COMPONENT: SphereCollider");
+                    sb.AppendLine($"IsTrigger: {(sphere.isTrigger ? "1" : "0")}");
+                    sb.AppendLine($"Center: {FormatVec3(sphere.center)}");
+                    sb.AppendLine($"Radius: {sphere.radius:F4}");
+                }
+                else if (col is CapsuleCollider capsule)
+                {
+                    sb.AppendLine("COMPONENT: CapsuleCollider");
+                    sb.AppendLine($"IsTrigger: {(capsule.isTrigger ? "1" : "0")}");
+                    sb.AppendLine($"Center: {FormatVec3(capsule.center)}");
+                    sb.AppendLine($"Radius: {capsule.radius:F4}");
+                    sb.AppendLine($"Height: {capsule.height:F4}");
+                    sb.AppendLine($"Direction: {capsule.direction}");
+                }
+                else if (col is MeshCollider meshCol)
+                {
+                    Mesh mesh = meshCol.sharedMesh;
+                    if (mesh == null) return;
+                    sb.AppendLine("COMPONENT: MeshCollider");
+                    sb.AppendLine($"IsTrigger: {(meshCol.isTrigger ? "1" : "0")}");
+                    sb.AppendLine($"VertexCount: {mesh.vertexCount}");
+                    foreach (Vector3 v in mesh.vertices) sb.AppendLine($"{v.x:F4},{v.y:F4},{v.z:F4}");
+                    int[] triangles = mesh.triangles;
+                    sb.AppendLine($"TriangleCount: {triangles.Length / 3}");
+                    for (int i = 0; i < triangles.Length; i += 3)
+                        sb.AppendLine($"{triangles[i]},{triangles[i+1]},{triangles[i+2]}");
+                }
+
+                if (col.material != null)
+                {
+                    PhysicsMaterial mat = col.material;
+                    sb.AppendLine("Material: " + mat.name);
+                    sb.AppendLine("StaticFriction: " + mat.staticFriction);
+                    sb.AppendLine("DynamicFriction: " + mat.dynamicFriction);
+                    sb.AppendLine("Bounciness: " + mat.bounciness);
+                    sb.AppendLine("BounceCombine: " + mat.bounceCombine);
+                    sb.AppendLine("FrictionCombine: " + mat.frictionCombine);
+                }
+                else
+                {
+                    sb.AppendLine("Material: DefaultMaterial");
+                    sb.AppendLine("StaticFriction: 0.6");
+                    sb.AppendLine("DynamicFriction: 0.6");
+                    sb.AppendLine("Bounciness: 0");
+                    sb.AppendLine("BounceCombine: " + PhysicsMaterialCombine.Average );
+                    sb.AppendLine("FrictionCombine: " + PhysicsMaterialCombine.Average);
+                }
             }
         }
 
@@ -237,7 +303,6 @@ namespace Codes.Util
             sb.AppendLine($"CollisionDetection: {(int)rb.collisionDetectionMode}");
             sb.AppendLine($"CenterOfMass: {FormatVec3(rb.centerOfMass)}");
         }
-
         private static void ExportServerComponents(GameObject go, StringBuilder sb)
         {
             ServerComponent[] serverComps = go.GetComponents<ServerComponent>();
@@ -251,6 +316,25 @@ namespace Codes.Util
             }
         }
 
+        
+        private static void BakeFootPivot(GameObject go)
+        {
+            var cols = go.GetComponentsInChildren<Collider>();
+            if (cols.Length == 0) return;
+            Bounds b = cols[0].bounds;
+            for (int i = 1; i < cols.Length; i++) b.Encapsulate(cols[i].bounds);
+            float foot = go.transform.position.y - b.min.y;
+            if (foot <= 0f) return;
+            Vector3 up = new Vector3(0, foot, 0);
+            foreach (Transform child in go.transform) child.localPosition += up;
+            foreach (var col in go.GetComponents<Collider>())
+                switch (col) {
+                    case CapsuleCollider c: c.center += up; break;
+                    case SphereCollider s:  s.center += up; break;
+                    case BoxCollider bx:    bx.center += up; break;
+                }
+        }
+        
         private static string FormatVec3(Vector3 v) => $"{v.x:F4},{v.y:F4},{v.z:F4}";
         private static string FormatQuat(Quaternion q) => $"{q.x:F4},{q.y:F4},{q.z:F4},{q.w:F4}";
     }
