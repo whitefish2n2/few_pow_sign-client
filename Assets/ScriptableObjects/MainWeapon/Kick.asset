@@ -25,5 +25,5 @@ MonoBehaviour:
   handleObjectRotation: {x: 0, y: -90, z: 0}
   thirdPovObjectPosition: {x: 0.4640045, y: -0.4020001, z: 0.7789993}
   thirdPovObjectRotation: {x: 0, y: -90, z: 0}
-  type: 1
+  type: 0
   interactHighlightColor: {r: 0.21702574, g: 0.8037735, b: 0, a: 0.5686275}

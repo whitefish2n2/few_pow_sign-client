@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5009095514654996550
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5320003981870123855}
+  m_Layer: 8
+  m_Name: BulletPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5320003981870123855
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009095514654996550}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 28.4, y: 14.7, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4332040028668920809}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &4293274088008901634
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -82,7 +113,10 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: fcf9c4473332a3240abbbcde703531bf, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: e433513183e530347b5296482170b7be, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5320003981870123855}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e433513183e530347b5296482170b7be, type: 3}
       insertIndex: -1
@@ -105,6 +139,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e433513183e530347b5296482170b7be, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5919803202245600791}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e433513183e530347b5296482170b7be, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4780654005105322647}
   m_SourcePrefab: {fileID: 100100000, guid: e433513183e530347b5296482170b7be, type: 3}
 --- !u!1 &3987286390292732243 stripped
 GameObject:
@@ -139,6 +176,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -160,9 +199,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &662140723467043686
 MeshCollider:
@@ -198,7 +239,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88075628de14de943a66b5a4ce5a3b4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactableId: 0
   onTarget:
     m_PersistentCalls:
       m_Calls: []
@@ -225,6 +265,9 @@ MonoBehaviour:
   owner: {fileID: 0}
   stat: {fileID: 11400000, guid: d63102008de3cf548a8a9e1e325c7944, type: 2}
   animator: {fileID: 5218082726068451038}
+  bulletTrailPrefab: {fileID: 1898484222375408495, guid: aa99c51793acbbc4abf1056b5512ac37, type: 3}
+  muzzlePoint: {fileID: 5320003981870123855}
+  trailSpeed: 300
   currentAmmo: 0
   isHolding: 0
   isOnInventory: 0
@@ -258,10 +301,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3987286390292732243}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -278,3 +321,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4780654005105322647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3987286390292732243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a842f278a13141a080f0ca969bb17b46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Codes.InGame.SynchronizedObject
+  objectId: 0
+--- !u!4 &4332040028668920809 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e433513183e530347b5296482170b7be, type: 3}
+  m_PrefabInstance: {fileID: 4293274088008901634}
+  m_PrefabAsset: {fileID: 0}

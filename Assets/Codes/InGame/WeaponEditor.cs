@@ -172,8 +172,8 @@ public class WeaponEditor : Editor
         thirdPovObjectToCopyInfo = (GameObject)EditorGUILayout.ObjectField("ThirdPov ref", thirdPovObjectToCopyInfo, typeof(GameObject), true);
         if (GUILayout.Button($"Copy thirdPovPos/Rot of this object"))
         {
-            thirdPovObjectPosition.vector3Value = handleObjectToCopyInfo.transform.localPosition;
-            thirdPovObjectRotation.vector3Value = handleObjectToCopyInfo.transform.localRotation.eulerAngles;
+            thirdPovObjectPosition.vector3Value = thirdPovObjectToCopyInfo.transform.localPosition;
+            thirdPovObjectRotation.vector3Value = thirdPovObjectToCopyInfo.transform.localRotation.eulerAngles;
         }
         EditorGUILayout.PropertyField(interactHighlightColor);
 

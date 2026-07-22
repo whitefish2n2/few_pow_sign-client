@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Codes.InGame.Weapons;
+using NetTest;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -10,26 +11,79 @@ namespace Codes.InGame.Player_Ingame
 {
     public class HandledPlayerWeaponSystem : WeaponSystem
     {
+        private readonly RaycastHit[] _hits = new RaycastHit[16];
         public bool shotAble = true;
-        
+        private MoveSystem moveSystem;
         int weaponIndex = 0;
-        public override void Shot(Vector3 dir, Vector3 position)
+        
+        
+        private void Update()
         {
+            if (!IngameInputDispatcher.Instance.GetIsAttackPressed()) return;
+            if (holdingWeapon == null) return;
+            if (!holdingWeapon.CanShoot()) return;
+
+            holdingWeapon.RegisterShot();
+            Shot(moveSystem.cam.transform.position,moveSystem.cam.transform.forward);
+        }
+
+        public override void Init()
+        {
+            base.Init();
+            moveSystem = GetComponent<MoveSystem>();
+        }
+
+        public override void Shot(Vector3 position, Vector3 dir)
+        {
+            if (holdingWeapon == null) return;
             if (holdingWeapon.currentAmmo != 0)
             {
-                holdingWeapon.Shot();
-                RaycastHit[] hit = new RaycastHit[] { };
-                var size = Physics.RaycastNonAlloc(position, dir, hit, 300);
-                foreach (var obj in hit)
+                Vector3 reachPosition = Physics.Raycast(position, dir, out RaycastHit reachHit, 300f)
+                    ? reachHit.point
+                    : position + dir * 300f;
+                holdingWeapon.Shot(reachPosition);
+
+                var size = Physics.RaycastNonAlloc(position, dir, _hits, 300);
+
+                // 서버 PhysicsSystem::Raycast와 동일한 방식: 자기 자신만 제외하고 선형 스캔으로 최근접 후보 하나 추적
+                int bestIndex = -1;
+                float bestDistance = float.MaxValue;
+                for (int i = 0; i < size; i++)
                 {
-                    Debug.Log(obj.point);
+                    if (_hits[i].collider.gameObject.CompareTag("Player"))
+                    {
+                        var pc = _hits[i].collider.gameObject.GetComponent<PlayerComponent>();
+                        if (pc != null && pc.publicKey == InGameDataStatic.Instance.myPublicKey)
+                            continue;   // 자기 자신은 후보에서 제외
+                    }
+
+                    if (_hits[i].distance < bestDistance)
+                    {
+                        bestDistance = _hits[i].distance;
+                        bestIndex = i;
+                    }
+                }
+
+                if (bestIndex < 0)
+                {
+                    EnetClient.Instance.SendShotPacket();   // 사거리 안에 자기 자신 말곤 아무것도 없음
+                    return;
+                }
+
+                var best = _hits[bestIndex];
+                if (best.collider.gameObject.CompareTag("Player"))
+                {
+                    var pc = best.collider.gameObject.GetComponent<PlayerComponent>();
+                    EnetClient.Instance.SendHitThisPacket((byte)pc.publicKey, position, dir);
+                }
+                else
+                {
+                    //벽에 총알 부딫힘(todo: 벽에 안 부딫혔는데도 다른 변수로 인해 여기로 올 경우 확인 필요)
+                    Debug.Log(best.collider.gameObject.name);
+                    EnetClient.Instance.SendShotPacket();
                 }
             }
-            else
-            {
-                
-            }
-            base.Shot(dir, position);
+            base.Shot(position,dir);
         }
         
         

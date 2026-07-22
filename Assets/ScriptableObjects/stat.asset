@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3f0e59d8d430c347bc7a05cad52b56e, type: 3}
   m_Name: stat
   m_EditorClassIdentifier: 
-  weaponName: 0
+  weaponName: 2
   headDamage: 100
-  lagDamage: 50
-  bodyDamage: 40
-  maxAmmo: 30
-  termToShot: 0.2
-  thirdPovObjectPrefab: {fileID: 7222821889565179315, guid: dba956e7d5ffacd4f91e8506fb0e4af2, type: 3}
-  handleObjectPrefab: {fileID: 7222821889565179315, guid: dba956e7d5ffacd4f91e8506fb0e4af2, type: 3}
+  lagDamage: 20
+  bodyDamage: 50
+  maxAmmo: -1
+  termToShot: 0.5
+  thirdPovObjectPrefab: {fileID: 1112358239876087597, guid: 0ccbeb6946924b54f80e99b2a43a6877, type: 3}
+  handleObjectPrefab: {fileID: 1112358239876087597, guid: 0ccbeb6946924b54f80e99b2a43a6877, type: 3}
   shotSound: {fileID: 0}
-  handlePosition: {x: 0.4810028, y: -0.44199342, z: 0.77130127}
-  handleObjectRotation: {x: -0, y: 1.0000026, z: -0}
-  thirdPovObjectPosition: {x: 0.4810028, y: -0.44199342, z: 0.77130127}
-  thirdPovObjectRotation: {x: -0, y: 1.0000026, z: -0}
-  type: 2
-  interactHighlightColor: {r: 0.0698464, g: 0.5924529, b: 0.025710154, a: 0.57254905}
+  handlePosition: {x: 0.44000244, y: -0.36200684, z: 0.5993042}
+  handleObjectRotation: {x: 292.9022, y: 108.078186, z: 142.84811}
+  thirdPovObjectPosition: {x: 0.44000244, y: -0.36200684, z: 0.5993042}
+  thirdPovObjectRotation: {x: 292.9022, y: 108.078186, z: 142.84811}
+  type: 0
+  interactHighlightColor: {r: 0.011914103, g: 0.4264151, b: 0, a: 0.5529412}

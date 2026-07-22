@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Codes.InGame.Player_Ingame;
 using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,11 +15,69 @@ namespace Codes.InGame.Weapons
         [SerializeField] protected WeaponType holdingWeaponType;
         [SerializeField] protected Weapon holdingWeapon;
         [SerializeField] protected GameObject weaponHolder;//총의 transform 부모 개체 
-        protected Player ParentPlayer;
+        protected PlayerBehaviour parentPlayerBehaviour;
         protected Weapon characterHand;//플레이어 주먹
-        private void Awake()
+        
+
+
+        
+        
+        
+        
+        
+        public virtual void Init()
         {
-            ParentPlayer = GetComponent<Player>();
+            parentPlayerBehaviour = GetComponent<PlayerBehaviour>();
+            
+            if (weaponHolder == null)   // 로컬은 MoveSystem이 카메라 아래에 생성·주입 → 스킵. 원격만 여기서
+            {
+                var pc = GetComponent<PlayerComponent>();
+                var t = new GameObject("Hand").transform;
+                t.SetParent(transform);                              // 몸 자식 → body yaw 자동 추종
+                t.localPosition = pc ? pc.aimOrigin : Vector3.zero;
+                t.localRotation = Quaternion.identity;
+                weaponHolder = t.gameObject;
+            }
+        }
+        public void ApplyPickup(Weapon weapon, int slot, int holdingSlot)
+        {
+            weapon.ApplyPickupState();
+            weapon.gameObject.transform.SetParent(weaponHolder.transform);
+            weapon.disHold();
+            weapons[slot] = weapon;
+            ApplyHolding(holdingSlot);
+        }
+
+        public void ApplyDrop(Weapon weapon, Vector3 position, int holdingSlot)
+        {
+            int slot = weapons.IndexOf(weapon);
+            if (slot >= 0) weapons[slot] = null;
+            if (holdingWeapon == weapon) holdingWeapon = null;   // 방금 드롭한 무기가 참조로 남아있으면 ApplyHolding의 disHold가 재비활성화시킴
+            weapon.Drop(transform.forward);        // 상태복구+임펄스(서버와 동일 크기1·yaw방향)
+            weapon.transform.SetParent(null);
+            weapon.transform.position = position;  // 회전은 손 포즈 유지 (서버 스트림이 확정)
+            weapon.BeginServerDriven();            // 이후 궤적은 ObjectMove 스트림이 구동
+            ApplyHolding(holdingSlot);
+        }
+        public void ApplySwap(int holdingSlot) => ApplyHolding(holdingSlot);
+
+        public void ApplyReload(int slot, int ammo)
+        {
+            if (slot >= 0 && slot < weapons.Count && weapons[slot] != null)
+                weapons[slot].currentAmmo = ammo;
+        }
+
+        private void ApplyHolding(int holdingSlot)
+        {
+            if (holdingWeapon) holdingWeapon.disHold();
+            if (holdingSlot < 0 || holdingSlot >= weapons.Count || weapons[holdingSlot] == null)
+            {
+                holdingWeapon = null;              // 0xFF(빈손)도 여기로 떨어짐
+                return;
+            }
+            holdingWeapon = weapons[holdingSlot];
+            holdingWeaponType = (WeaponType)holdingSlot;
+            WeaponHold();
         }
         public virtual void Swap(bool dir)
         {
@@ -42,8 +101,24 @@ namespace Codes.InGame.Weapons
         }
         public virtual void Shot(Vector3 position, Vector3 direction)
         {
-            //총 발사 이펙트에요
+            //총 발사해요
             Debug.Log("빵");
+        }
+
+        // ShotNotify 수신 시 원격 플레이어 트레일 재생용 (UnHandledPlayerBehavior.Shot에서 호출)
+        public void PlayShotEffect(Vector3 origin, Vector3 dir)
+        {
+            if (holdingWeapon == null) return;
+            Vector3 reachPosition = Physics.Raycast(origin, dir, out RaycastHit hit, 300f)
+                ? hit.point
+                : origin + dir * 300f;
+            holdingWeapon.Shot(reachPosition);
+        }
+
+        // ShotNotify 수신 시 탄약 표시 차감용 (본인 포함 전원, InGameLogicStatic에서 호출)
+        public void ConsumeAmmoVisual()
+        {
+            if (holdingWeapon != null && holdingWeapon.currentAmmo > 0) holdingWeapon.currentAmmo--;
         }
 
         public virtual void Reload()
@@ -108,8 +183,9 @@ namespace Codes.InGame.Weapons
                 WeaponHold();
             }
         }
-        
-        
+
+
+        public void SetWeaponHolder(GameObject holder) => weaponHolder = holder;
     }
     
     public enum WeaponType
