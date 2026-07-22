@@ -291,19 +291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprites:
-    array:
-    - Key: 
-      Value: {fileID: 0}
-    - Key: 
-      Value: {fileID: 0}
-    - Key: 
-      Value: {fileID: 0}
-    - Key: 
-      Value: {fileID: 0}
-    - Key: 
-      Value: {fileID: 0}
-    - Key: 
-      Value: {fileID: 0}
+    array: []
 --- !u!1 &86200896
 GameObject:
   m_ObjectHideFlags: 0
