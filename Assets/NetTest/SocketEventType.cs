@@ -1,23 +1,54 @@
+using Unity.VisualScripting;
+
 namespace NetTest
 {
     public enum SocketEventType : byte
     {
-        //player->server
-        Assign = 0, // _R_
-        Input = 1,
-        Move = 2,
+        Assign = 0, //P2S _R_
+        Input = 1,//P2S
+        Move = 2,//P2S
+        
+        Setup = 3, // S2P_R_
+        Update = 4,//S2P
+        NotUse = 5,   //S2P _R_
+        NotUseTwo = 6,  //S2P _R_
+        GeneratePlayer = 7, //S2P _R_
+        MapInit = 8,//S2P_R_
+        
+        MapInitReady = 9,//P2S _R_
+        
+        Progress = 10, //P2S _R_
+        ProgressNotify = 11, // S2P
 
-        //server->player
-        Setup = 3, // _R_
-        Update = 4,
-        Hit = 5,   // _R_
-        Swap = 6,  // _R_
-        Generate = 7, // _R_
+        AssignResponse = 12, //S2P _R_
+        PlayerMove = 13, //S2P
+        ObjectMove = 14, //S2P
+        RespawnPlayer = 15,//S2P _R_
+        Death            = 16, //S2P _R_
+        // ── 무기 시스템 (19b-2 / 19c) ──
+        Interact       = 17, //P2S _R_
+        GetWeaponNotify  = 18, //S2P _R_
+        DropWeapon       = 19, //P2S _R_
+        DropWeaponNotify = 20, //S2P _R_
+        SwapWeapon       = 21, //P2S _R_
+        SwapWeaponNotify = 22, //S2P _R_
+        Reload           = 23, //P2S _R_
+        ReloadNotify     = 24, //S2P _R_
+        Shot             = 25, //P2S
+        ShotNotify       = 26, //S2P _R_
+        HitThis          = 27, //P2S _R_
+        HitNotify        = 28, //S2P _R_
+        GenerateObject = 29, //S2P _R_
+        Jump = 30, //P2S _R_
 
-        Ping = 252,
-        Pong = 253,
+        PhaseChangeNotify = 31, //S2P _R_
+        GameEndNotify     = 32, //S2P _R_
+        RoundEndNotify    = 33, //S2P _R_
 
-        Default = 254
+        Ping = 252,//S2P
+        Pong = 253,//P2S
+
+        Default = 254,
     }
 
     public static class SocketEventTypeHelper
@@ -28,9 +59,21 @@ namespace NetTest
             {
                 case SocketEventType.Assign:
                 case SocketEventType.Setup:
-                case SocketEventType.Hit:
-                case SocketEventType.Swap:
-                case SocketEventType.Generate:
+                case SocketEventType.Update:    
+                case SocketEventType.NotUse:
+                case SocketEventType.NotUseTwo:
+                case SocketEventType.GeneratePlayer:
+                case SocketEventType.MapInit:
+                case SocketEventType.Ping:
+                case SocketEventType.Pong:
+                case SocketEventType.Progress :
+                case SocketEventType.MapInitReady :
+                // 무기 P2S 요청 (reliable) — Shot은 unsequenced라 제외
+                case SocketEventType.Interact:
+                case SocketEventType.DropWeapon:
+                case SocketEventType.SwapWeapon:
+                case SocketEventType.Reload:
+                case SocketEventType.HitThis:
                     return true;
                 default:
                     return false;
