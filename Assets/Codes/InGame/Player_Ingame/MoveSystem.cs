@@ -22,7 +22,6 @@ public class MoveSystem : Mover
     [HideInInspector] public Vector3 moveVector =  Vector3.zero;
     private Vector2 _inputVector = Vector2.zero;
     [HideInInspector] public Vector3 currentVelocity = Vector3.zero;
-    [HideInInspector] public Rigidbody rb;
     PlayerComponent playerComponent;
 
     [SerializeField] private bool isOnGround = true;

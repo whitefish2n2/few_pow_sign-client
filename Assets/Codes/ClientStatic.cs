@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Codes.Util.Annotation;
 using UnityEngine;
 
 namespace Codes
@@ -9,7 +8,7 @@ namespace Codes
     {
         public static ClientStatic Instance{get;private set;} = new();
         
-        [ReadOnly] public string MatchServerHost = "localhost";
+        public string MatchServerHost = "localhost";
         
 
         public string MatchServerBaseUrl => "http://" + MatchServerHost;
