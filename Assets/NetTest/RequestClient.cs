@@ -29,7 +29,7 @@ namespace NetTest
         public async UniTask SignInWithRefreshToken(Action<ApiResponse<SignInResponseDto>> onSuccess, Action<ErrorResponse> onFail,Action onTimeOut, SignInWithRefreshDto dto)
         {
             const string endPoint = "/auth/signin-with-refresh";
-            var url = new UrlBuilder(ClientStatic.Instance.GetFullUrl()+endPoint).Build();
+            var url = new UrlBuilder(ClientStatic.Instance.GetFullServerUrl()+endPoint).Build();
             await HandlePostRequest(url,onSuccess,onFail,onTimeOut,dto,"SignInWithRefreshToken",20);
         }
         
@@ -37,7 +37,7 @@ namespace NetTest
         public async UniTask SignUp(Action<ApiResponse<SignInResponseDto>> onSuccess, Action<ErrorResponse> onFail, Action onTimeOut, SignUpDto dto)
         {
             const string endPoint = "/auth/signup";
-            var url = (new UrlBuilder(ClientStatic.Instance.GetFullUrl() + endPoint)).Build();
+            var url = (new UrlBuilder(ClientStatic.Instance.GetFullServerUrl() + endPoint)).Build();
             await HandlePostRequest(url,onSuccess,onFail,onTimeOut, dto,"SignUp",20);
         }
         
@@ -54,7 +54,7 @@ namespace NetTest
             var tcs = new TaskCompletionSource<bool>();
 
             const string endPoint = "/auth/validate-token";
-            var url = new UrlBuilder(ClientStatic.Instance.GetFullUrl()).SetEndPoint(endPoint).Build();
+            var url = new UrlBuilder(ClientStatic.Instance.GetFullServerUrl()).SetEndPoint(endPoint).Build();
 
             await HandleGetRequest<ApiResponse<bool>>(
                 url,
