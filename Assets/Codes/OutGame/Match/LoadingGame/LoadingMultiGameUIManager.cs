@@ -38,12 +38,35 @@ namespace Codes.OutGame.Match.LoadingGame
 
         private async UniTaskVoid LoadPlayerElement(List<AnotherPlayerInfoDto> dto)
         {
+            int myTeam = 0;
             foreach (var p in dto)
             {
-                var newElement = Instantiate(playerElement, leftPlayerHolder.transform, true);
+                if (p.id == Codes.ClientStatic.Instance.authId)
+                {
+                    myTeam = p.team;
+                    break;
+                }
+            }
+
+            bool nextIsLeft = true;
+            foreach (var p in dto)
+            {
+                GameObject holder;
+                if (p.team == 0)
+                {
+                    // 팀 미배정이면 좌/우에 번갈아 대충 배치
+                    holder = nextIsLeft ? leftPlayerHolder : rightPlayerHolder;
+                    nextIsLeft = !nextIsLeft;
+                }
+                else
+                {
+                    holder = (p.team == myTeam) ? leftPlayerHolder : rightPlayerHolder;
+                }
+
+                var newElement = Instantiate(playerElement, holder.transform, true);
                 var elementComponent = newElement.GetComponent<LoadingUserElement>();
                 userElements.Add(p.id, elementComponent);
-                
+
                 Sprite sprite = await ReusableSpriteHolder.Instance.GetCharacterPortraitSprite(p.characterId);
                 elementComponent.SetPlayer(sprite, p.name);
             }
