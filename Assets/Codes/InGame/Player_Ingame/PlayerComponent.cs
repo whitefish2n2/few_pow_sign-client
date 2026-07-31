@@ -13,6 +13,7 @@ namespace Codes.InGame.Player_Ingame
         [SerializeField] public float moveSpeed = 1;
         [SerializeField] public float jumpPower = 1;
         [SerializeField] public int maxHp;
+        public int currentHp;   // 스폰 시 PlayerGenerateManager가 CharacterData 기준으로 maxHp와 함께 세팅함
         [SerializeField] public Vector3 aimOrigin;
         public float onGroundRadius = 0;
         public float onGroundYDistance = 0;

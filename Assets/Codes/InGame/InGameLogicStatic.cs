@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Codes.InGame.Player_Ingame;
 using Codes.InGame.Weapons;
 using Codes.Util;
 using NetCode.ENetCode;
@@ -14,6 +15,7 @@ namespace Codes.InGame
         public Dictionary<byte, PlayerBehaviour> players = new();
         public Dictionary<uint, SynchronizedObject> syncObjects = new();
         public Dictionary<uint, Mover> ingameMovers = new();
+        public Dictionary<int, int> teamScores = new();   // team -> 누적 라운드 스코어
 
         [SerializeField] public GameObject hitImpactBodyPrefab;
         [SerializeField] public GameObject hitImpactHeadPrefab;
@@ -30,6 +32,7 @@ namespace Codes.InGame
                 EnetClient.Instance.OnShotFired += ApplyShotFired;
                 EnetClient.Instance.OnHit += ApplyHit;
                 EnetClient.Instance.OnGameEnded += ApplyGameEnd;
+                EnetClient.Instance.OnRoundEnded += ApplyRoundEnd;
             }
         }
 
@@ -45,6 +48,7 @@ namespace Codes.InGame
                 EnetClient.Instance.OnShotFired -= ApplyShotFired;
                 EnetClient.Instance.OnHit -= ApplyHit;
                 EnetClient.Instance.OnGameEnded -= ApplyGameEnd;
+                EnetClient.Instance.OnRoundEnded -= ApplyRoundEnd;
             }
         }
         
@@ -53,6 +57,7 @@ namespace Codes.InGame
             players.Clear();
             ingameMovers.Clear();
             syncObjects.Clear();
+            teamScores.Clear();
         }
 
         public void PrepareToNewMatch()
@@ -60,6 +65,7 @@ namespace Codes.InGame
             players.Clear();
             ingameMovers.Clear();
             syncObjects.Clear();
+            teamScores.Clear();
         }
     
         public PlayerBehaviour GetPlayerByKey(byte publicKey)
@@ -126,6 +132,10 @@ namespace Codes.InGame
 
         private void ApplyHit(HitDto dto)
         {
+            var victim = GetPlayerByKey(dto.victimKey);
+            var victimPc = victim ? victim.GetComponent<PlayerComponent>() : null;
+            if (victimPc != null) victimPc.currentHp = dto.remainingHp;
+
             var prefab = dto.hitPart == 1 ? hitImpactHeadPrefab : hitImpactBodyPrefab;
             if (prefab != null)
                 Instantiate(prefab, dto.hitPosition, Quaternion.identity);
@@ -139,6 +149,9 @@ namespace Codes.InGame
                 if (player == null) continue;
                 player.gameObject.SetActive(true);   // Die()에서 비활성화됐던 것 복구
                 player.ChangePosition(entry.position);
+
+                var pc = player.GetComponent<PlayerComponent>();
+                if (pc != null) pc.currentHp = pc.maxHp;   // 리스폰 시 풀피 복구
             }
         }
 
@@ -148,5 +161,67 @@ namespace Codes.InGame
             SceneLoadingManager.Instance.LoadSceneAsync(SceneEnum.GameEnd, null);
         }
 
+        private void ApplyRoundEnd(RoundEndNotifyDto dto)
+        {
+            teamScores[dto.winningTeam] = dto.winningTeamScore;
+        }
+
+        // ===== 인게임 UI 바인딩용 헬퍼 =====
+
+        private byte? GetMyPublicKey()
+        {
+            string myId = ClientStatic.Instance.authId;
+            foreach (var p in MatchMakeStatic.Instance.playerConstructor)
+            {
+                if (p.id == myId) return (byte)p.publicKey;
+            }
+            return null;
+        }
+
+        public int GetMyTeam()
+        {
+            string myId = ClientStatic.Instance.authId;
+            foreach (var p in MatchMakeStatic.Instance.playerConstructor)
+            {
+                if (p.id == myId) return p.team;
+            }
+            return 0;
+        }
+
+        // "HP:nn" 형식
+        public string GetMyHpText()
+        {
+            var key = GetMyPublicKey();
+            var pc = key.HasValue ? GetPlayerByKey(key.Value)?.GetComponent<PlayerComponent>() : null;
+            return pc != null ? $"HP:{pc.currentHp}" : "HP:-";
+        }
+
+        // "ammo:30/30" 형식
+        public string GetMyAmmoText()
+        {
+            var key = GetMyPublicKey();
+            var ws = key.HasValue ? GetPlayerByKey(key.Value)?.GetComponent<WeaponSystem>() : null;
+            if (ws != null && ws.TryGetCurrentAmmo(out int current, out int max))
+                return $"ammo:{current}/{max}";
+            return "ammo:-/-";
+        }
+
+        public int GetMyTeamScore()
+        {
+            return teamScores.TryGetValue(GetMyTeam(), out var score) ? score : 0;
+        }
+
+        // 상대팀이 여럿이면 그중 최고 점수
+        public int GetBestEnemyTeamScore()
+        {
+            int myTeam = GetMyTeam();
+            int best = 0;
+            foreach (var kv in teamScores)
+            {
+                if (kv.Key == myTeam) continue;
+                if (kv.Value > best) best = kv.Value;
+            }
+            return best;
+        }
     }
 }

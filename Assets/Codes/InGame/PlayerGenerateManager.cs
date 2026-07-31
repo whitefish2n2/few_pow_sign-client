@@ -31,6 +31,8 @@ namespace Codes.InGame
                 var obj = Instantiate(prefab, item.spawnPos, Quaternion.identity);
                 var pc = obj.GetComponent<PlayerComponent>();
                 pc.publicKey = item.publicKey;
+                pc.maxHp = charData.baseStats.maxHp;
+                pc.currentHp = pc.maxHp;
                 
                 PlayerBehaviour beh;
                 if (item.publicKey == InGameDataStatic.Instance.myPublicKey)

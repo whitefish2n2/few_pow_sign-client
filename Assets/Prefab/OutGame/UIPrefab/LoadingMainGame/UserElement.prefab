@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uAE30\uC774\uC774\uC774\uC774\uC774\uC778\uB2C9\uB124\uC784"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 175a4a9ae9b167243babba6b8dec3a38, type: 2}
-  m_sharedMaterial: {fileID: -9021260610757383029, guid: 175a4a9ae9b167243babba6b8dec3a38, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: cf197deca608a7143b7aa36f47b62fa7, type: 2}
+  m_sharedMaterial: {fileID: 4864030428281666245, guid: cf197deca608a7143b7aa36f47b62fa7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -92,13 +92,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14.5
+  m_fontSize: 13.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 6
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

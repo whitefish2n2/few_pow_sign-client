@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -7,18 +8,32 @@ public class TMPOutLine : MonoBehaviour
     private TextMeshProUGUI textMeshProUGUI;
     [SerializeField] private Color color;
     [Range(0,1)] [SerializeField] private float width;
-    
+
     private void Awake()
     {
         if (!textMeshProUGUI)
             TryGetComponent(out textMeshProUGUI);
+    }
+
+    private void Start()
+    {
+        StartCoroutine(ApplyOutlineDelayed());
+    }
+
+    // Awake 시점엔 폰트 에셋(특히 큰 아틀라스)이 완전히 준비 안 됐을 수 있어서
+    // 한 프레임 미루고 outline 적용 + 강제 메시 갱신
+    private IEnumerator ApplyOutlineDelayed()
+    {
+        yield return null;
+
         if (!textMeshProUGUI || !textMeshProUGUI.fontSharedMaterial)
         {
             Debug.LogError("TMPOutLine : No TMPOutLine component attached");
-            return;
+            yield break;
         }
         textMeshProUGUI.outlineColor = color;
-        textMeshProUGUI.outlineWidth= width;
+        textMeshProUGUI.outlineWidth = width;
+        textMeshProUGUI.ForceMeshUpdate();
     }
 
     private void Reset()

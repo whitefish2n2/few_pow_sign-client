@@ -186,6 +186,19 @@ namespace Codes.InGame.Weapons
 
 
         public void SetWeaponHolder(GameObject holder) => weaponHolder = holder;
+
+        public bool TryGetCurrentAmmo(out int current, out int max)
+        {
+            if (holdingWeapon == null)
+            {
+                current = 0;
+                max = 0;
+                return false;
+            }
+            current = holdingWeapon.currentAmmo;
+            max = holdingWeapon.stat.maxAmmo;
+            return true;
+        }
     }
     
     public enum WeaponType
