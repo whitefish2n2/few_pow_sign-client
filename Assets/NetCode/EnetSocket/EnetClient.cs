@@ -130,6 +130,19 @@ namespace NetTest{
     
             Debug.Log("EnetClient completely stopped and reset.");
         }
+
+        // ENet이 프로토콜 레벨에서 자체 추적하는 값이라 별도 핑퐁 패킷 없이 바로 읽음
+        public unsafe uint GetPingMs()
+        {
+            return server != null ? server->roundTripTime : 0;
+        }
+
+        public unsafe float GetPacketLossPercent()
+        {
+            if (server == null) return 0f;
+            return server->packetLoss / (float)enet.ENet.ENET_PEER_PACKET_LOSS_SCALE * 100f;
+        }
+
         private void ClearQueues()
         {
             // 1. 송신 큐(Request Queue) 비우기 및 배열 반납
