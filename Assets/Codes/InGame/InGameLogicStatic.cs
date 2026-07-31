@@ -151,7 +151,7 @@ namespace Codes.InGame
                 var player = GetPlayerByKey(entry.publicKey);
                 if (player == null) continue;
                 player.gameObject.SetActive(true);   // Die()에서 비활성화됐던 것 복구
-                player.ChangePosition(entry.position);
+                player.Teleport(entry.position);
 
                 var pc = player.GetComponent<PlayerComponent>();
                 if (pc != null) pc.currentHp = pc.maxHp;   // 리스폰 시 풀피 복구

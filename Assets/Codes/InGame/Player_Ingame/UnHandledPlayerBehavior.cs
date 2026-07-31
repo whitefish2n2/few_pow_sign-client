@@ -25,6 +25,15 @@ namespace Codes.InGame.Player_Ingame
         public override void ChangeDirection(Vector3 dir) { serverYaw = dir.y; }
         public override void ChangeVelocity(float vx, float vy, float vz) { serverVel = new Vector3(vx, vy, vz); }
 
+        public override void Teleport(Vector3 pos)
+        {
+            serverPos = pos;
+            serverVel = Vector3.zero;
+            lastPacketTime = Time.time;
+            hasTarget = true;
+            transform.position = pos;
+        }
+
         private void LateUpdate()
         {
             if (!hasTarget || pc == null) return;

@@ -142,6 +142,16 @@ public class HandledPlayerBehavior : PlayerBehaviour
     public override void ChangeVelocity(float vx, float vy, float vz) { serverVel = new Vector3(vx, vy, vz); }
     public override void ChangeDirection(Vector3 dir) { } // 본인 시야=로컬 마우스 권위
 
+    public override void Teleport(Vector3 pos)
+    {
+        serverPos = pos;
+        serverVel = Vector3.zero;
+        hasServer = true;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.position = pos;
+    }
+
 
 
     public override void ChangePlayerState(PlayerState state)

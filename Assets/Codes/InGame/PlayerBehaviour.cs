@@ -33,6 +33,7 @@ namespace Codes.InGame
         public abstract void ChangePosition(Vector3 pos);
         public abstract void ChangeDirection(Vector3 dir);
         public abstract void ChangeVelocity(float velocityX, float velocityY, float velocityZ);
+        public abstract void Teleport(Vector3 pos);
         
         //Action
         public abstract void ChangePlayerState(PlayerState state);
