@@ -16,6 +16,7 @@ namespace Codes.InGame
         public Dictionary<uint, SynchronizedObject> syncObjects = new();
         public Dictionary<uint, Mover> ingameMovers = new();
         public Dictionary<int, int> teamScores = new();   // team -> 누적 라운드 스코어
+        private byte currentPhase;   // 서버 InGamePhase: 0=Initialize,1=Loading,2=Prepare,3=Fighting,4=Closing,5=Cleaning
 
         [SerializeField] public GameObject hitImpactBodyPrefab;
         [SerializeField] public GameObject hitImpactHeadPrefab;
@@ -33,6 +34,7 @@ namespace Codes.InGame
                 EnetClient.Instance.OnHit += ApplyHit;
                 EnetClient.Instance.OnGameEnded += ApplyGameEnd;
                 EnetClient.Instance.OnRoundEnded += ApplyRoundEnd;
+                EnetClient.Instance.OnPhaseChanged += ApplyPhaseChanged;
             }
         }
 
@@ -49,6 +51,7 @@ namespace Codes.InGame
                 EnetClient.Instance.OnHit -= ApplyHit;
                 EnetClient.Instance.OnGameEnded -= ApplyGameEnd;
                 EnetClient.Instance.OnRoundEnded -= ApplyRoundEnd;
+                EnetClient.Instance.OnPhaseChanged -= ApplyPhaseChanged;
             }
         }
         
@@ -166,7 +169,21 @@ namespace Codes.InGame
             teamScores[dto.winningTeam] = dto.winningTeamScore;
         }
 
+        private void ApplyPhaseChanged(PhaseChangeNotifyDto dto)
+        {
+            currentPhase = dto.phase;
+        }
+
         // ===== 인게임 UI 바인딩용 헬퍼 =====
+
+        // 서버 InGamePhase enum과 순서 일치(Initialize,Loading,Prepare,Fighting,Closing,Cleaning)
+        private static readonly string[] PhaseNames =
+            { "Initialize", "Loading", "Prepare", "Fight", "Closing", "Cleaning" };
+
+        public string GetCurrentPhaseText()
+        {
+            return currentPhase < PhaseNames.Length ? PhaseNames[currentPhase] : "?";
+        }
 
         private byte? GetMyPublicKey()
         {
