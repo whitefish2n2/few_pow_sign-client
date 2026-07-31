@@ -45,6 +45,14 @@ namespace Codes.InGame.Weapons
             weapon.gameObject.transform.SetParent(weaponHolder.transform);
             weapon.disHold();
             weapons[slot] = weapon;
+
+            // 이 pickup notify가 이 클라이언트 화면에서 "내가 주운 것"인지 "남이 주운 것"인지에 따라 레이어가 갈려야 함.
+            // gun_ui는 로컬 뷰모델 전용 카메라가 벽 뚫고 그리는 레이어라, 남의 무기에 붙으면 벽 너머로 비쳐 보임.
+            string layerName = this is HandledPlayerWeaponSystem ? "gun_ui" : "gun";
+            weapon.gameObject.layer = LayerMask.NameToLayer(layerName);
+            foreach (Transform child in weapon.gameObject.transform)
+                child.gameObject.layer = LayerMask.NameToLayer(layerName);
+
             ApplyHolding(holdingSlot);
         }
 

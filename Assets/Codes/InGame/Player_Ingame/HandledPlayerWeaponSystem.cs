@@ -114,6 +114,9 @@ namespace Codes.InGame.Player_Ingame
             weapon.gameObject.transform.SetParent(weaponHolder.transform);
             weapon.gameObject.transform.localPosition = weapon.stat.handlePosition;
             weapon.gameObject.transform.localRotation = Quaternion.Euler((weapon.stat.handleObjectRotation ));
+            weapon.gameObject.layer = LayerMask.NameToLayer("gun_ui");   // 로컬 플레이어 본인 뷰모델
+            foreach (Transform child in weapon.gameObject.transform)
+                child.gameObject.layer = LayerMask.NameToLayer("gun_ui");
             var beforeItem = weapons[(int)weapon.stat.type];
             //Debug.Log(beforeItem?.gameObject.name);
             weapons[(int)weapon.stat.type] = weapon;

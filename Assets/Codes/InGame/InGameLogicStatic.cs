@@ -185,22 +185,20 @@ namespace Codes.InGame
             return currentPhase < PhaseNames.Length ? PhaseNames[currentPhase] : "?";
         }
 
-        private byte? GetMyPublicKey()
+        // MatchMakeStatic.playerConstructor(AnotherPlayerInfoDto)의 publicKey는 매치서버(외게임)가 채워주지 않는 필드라 항상 0으로 옴 —
+        // 실제 인게임 publicKey는 데디케이트 서버가 AssignResponse로 내려준 InGameDataStatic.myPublicKey가 유일한 출처.
+        // (예전엔 위 playerConstructor.publicKey를 썼는데 항상 0이라 다른 플레이어(publicKey 0인 사람)의 HP/탄약이 내 UI에 뜨는 버그였음)
+        private byte GetMyPublicKey()
         {
-            string myId = ClientStatic.Instance.authId;
-            foreach (var p in MatchMakeStatic.Instance.playerConstructor)
-            {
-                if (p.id == myId) return (byte)p.publicKey;
-            }
-            return null;
+            return InGameDataStatic.Instance.myPublicKey;
         }
 
         public int GetMyTeam()
         {
-            string myId = ClientStatic.Instance.authId;
-            foreach (var p in MatchMakeStatic.Instance.playerConstructor)
+            byte myKey = GetMyPublicKey();
+            foreach (var entry in InGameDataStatic.Instance.PlayerSpawnInfo)
             {
-                if (p.id == myId) return p.team;
+                if (entry.publicKey == myKey) return entry.team;
             }
             return 0;
         }
@@ -208,16 +206,14 @@ namespace Codes.InGame
         // "HP:nn" 형식
         public string GetMyHpText()
         {
-            var key = GetMyPublicKey();
-            var pc = key.HasValue ? GetPlayerByKey(key.Value)?.GetComponent<PlayerComponent>() : null;
+            var pc = GetPlayerByKey(GetMyPublicKey())?.GetComponent<PlayerComponent>();
             return pc != null ? $"HP:{pc.currentHp}" : "HP:-";
         }
 
         // "ammo:30/30" 형식
         public string GetMyAmmoText()
         {
-            var key = GetMyPublicKey();
-            var ws = key.HasValue ? GetPlayerByKey(key.Value)?.GetComponent<WeaponSystem>() : null;
+            var ws = GetPlayerByKey(GetMyPublicKey())?.GetComponent<WeaponSystem>();
             if (ws != null && ws.TryGetCurrentAmmo(out int current, out int max))
                 return $"ammo:{current}/{max}";
             return "ammo:-/-";

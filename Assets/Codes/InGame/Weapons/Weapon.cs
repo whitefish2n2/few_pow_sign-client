@@ -135,9 +135,8 @@ namespace Codes.InGame.Weapons
             isOnInventory = true;
             rb.useGravity = false;
             rb.isKinematic = true;
-            gameObject.layer = LayerMask.NameToLayer("gun_ui");
-            foreach (Transform child in gameObject.transform)
-                child.gameObject.layer = LayerMask.NameToLayer("gun_ui");
+            // 레이어(gun/gun_ui) 지정은 여기서 하지 않음 — 이 무기를 든 게 "나"인지 "남"인지에 따라 달라져야 하는데
+            // ApplyPickupState는 누가 주웠는지 모름. WeaponSystem.ApplyPickup / HandledPlayerWeaponSystem.GetWeapon에서 지정.
         }
         public void Hold()
         {
