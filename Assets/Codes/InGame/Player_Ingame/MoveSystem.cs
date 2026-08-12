@@ -149,5 +149,8 @@ public class MoveSystem : Mover
             dispatcher.OnMouseDelta -= MouseMove;
             dispatcher.OnJump -= Jump;
         }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }
