@@ -142,6 +142,9 @@ namespace Codes.InGame
             var prefab = dto.hitPart == 1 ? hitImpactHeadPrefab : hitImpactBodyPrefab;
             if (prefab != null)
                 Instantiate(prefab, dto.hitPosition, Quaternion.identity);
+
+            if (dto.attackerKey == InGameDataStatic.Instance.myPublicKey && SoundManager.IsInitialized)
+                SoundManager.Instance.PlayHitConfirm();
         }
 
         private void ApplyRespawn(RespawnPlayerDto dto)

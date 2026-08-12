@@ -20,7 +20,7 @@ MonoBehaviour:
   termToShot: 0.8
   thirdPovObjectPrefab: {fileID: 3987286390292732243, guid: 36245e23180b2864696c96104058c482, type: 3}
   handleObjectPrefab: {fileID: 3987286390292732243, guid: 36245e23180b2864696c96104058c482, type: 3}
-  shotSound: {fileID: 0}
+  shotSound: {fileID: 8300000, guid: eca62288ee34fdc4ca8037863833c5cc, type: 3}
   handlePosition: {x: 0.4640045, y: -0.4020001, z: 0.7789993}
   handleObjectRotation: {x: 0, y: -90, z: 0}
   thirdPovObjectPosition: {x: 0.4640045, y: -0.4020001, z: 0.7789993}

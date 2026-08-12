@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Text;
+using Codes.InGame;
 using UnityEngine;
 
 namespace Codes.InGame.Weapons
@@ -69,6 +70,8 @@ namespace Codes.InGame.Weapons
         public void Shot(Vector3 reachPosition)
         {
             FireAnim();
+
+            if (SoundManager.IsInitialized) SoundManager.Instance.PlaySoundAtPosition(stat.shotSound, transform.position);
 
             if (bulletTrailPrefab != null && muzzlePoint != null)
             {
