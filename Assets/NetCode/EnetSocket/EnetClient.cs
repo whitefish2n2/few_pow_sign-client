@@ -418,6 +418,37 @@ namespace NetTest{
                 System.Buffers.ArrayPool<byte>.Shared.Return(payload);
             }
         }
+
+        // 플레이어 아닌 구조물(벽 등) 명중 클레임 — targetObjectId는 SynchronizedObject.objectId(서버 GameObject id)
+        public void SendHitStructurePacket(uint targetObjectId, Vector3 origin, Vector3 dir)
+        {
+            int payloadLength = 28; // targetObjectId(4)+origin(12)+dir(12)
+            byte[] payload = System.Buffers.ArrayPool<byte>.Shared.Rent(payloadLength);
+
+            try
+            {
+                BitConverter.GetBytes(targetObjectId).CopyTo(payload, 0);
+                BitConverter.GetBytes(origin.x).CopyTo(payload, 4);
+                BitConverter.GetBytes(origin.y).CopyTo(payload, 8);
+                BitConverter.GetBytes(origin.z).CopyTo(payload, 12);
+                BitConverter.GetBytes(dir.x).CopyTo(payload, 16);
+                BitConverter.GetBytes(dir.y).CopyTo(payload, 20);
+                BitConverter.GetBytes(dir.z).CopyTo(payload, 24);
+
+                byte[] msg = MakeDefaultPacket(SocketEventType.HitStructure, MatchMakeStatic.Instance.dedicatedServerIndex, 0, payload, payloadLength);
+
+                SendPacket(ref msg, payloadLength + DefaultPacketLength, enet.ENetPacketFlag.ENET_PACKET_FLAG_RELIABLE);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[EnetClient] HitStructure Packet 전송 실패: {e.Message}");
+            }
+            finally
+            {
+                System.Buffers.ArrayPool<byte>.Shared.Return(payload);
+            }
+        }
+
         private unsafe void ENetEventLoop()
         {
             if (client == null) return;

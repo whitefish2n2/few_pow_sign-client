@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Codes.InGame;
 using Codes.InGame.Weapons;
 using NetTest;
 using Unity.Mathematics;
@@ -78,9 +79,14 @@ namespace Codes.InGame.Player_Ingame
                 }
                 else
                 {
-                    //벽에 총알 부딫힘(todo: 벽에 안 부딫혔는데도 다른 변수로 인해 여기로 올 경우 확인 필요)
-                    Debug.Log(best.collider.gameObject.name);
-                    EnetClient.Instance.SendShotPacket();
+                    // 벽/구조물 등 비플레이어 히트 — Rigidbody가 있어야(=넉백이 실제로 의미 있어야) HitStructure로 판정 요청,
+                    // 없으면(순수 정적 지형 등) 그냥 시각효과만 있는 Shot으로 처리
+                    var rb = best.collider.GetComponentInParent<Rigidbody>();
+                    var syncObj = rb != null ? best.collider.GetComponentInParent<SynchronizedObject>() : null;
+                    if (syncObj != null)
+                        EnetClient.Instance.SendHitStructurePacket((uint)syncObj.objectId, position, dir);
+                    else
+                        EnetClient.Instance.SendShotPacket();
                 }
             }
             base.Shot(position,dir);

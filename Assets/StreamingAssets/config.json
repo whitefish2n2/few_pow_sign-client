@@ -1,5 +1,5 @@
 {
-  "matchServerHost": "192.168.200.104",
+  "matchServerHost": "192.168.200.105",
   "matchServerPort": 25565,
   "matchWebsocketPort": 25565
 }

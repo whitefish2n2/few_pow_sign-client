@@ -44,6 +44,7 @@ namespace NetTest
         PhaseChangeNotify = 31, //S2P _R_
         GameEndNotify     = 32, //S2P _R_
         RoundEndNotify    = 33, //S2P _R_
+        HitStructure      = 34, //P2S _R_ — 플레이어 아닌 구조물(벽 등) 명중 클레임, GameObject id로 지칭
 
         Ping = 252,//S2P
         Pong = 253,//P2S
@@ -74,6 +75,7 @@ namespace NetTest
                 case SocketEventType.SwapWeapon:
                 case SocketEventType.Reload:
                 case SocketEventType.HitThis:
+                case SocketEventType.HitStructure:
                     return true;
                 default:
                     return false;
