@@ -51,12 +51,12 @@ namespace Codes.InGame.Player_Ingame
                 float bestDistance = float.MaxValue;
                 for (int i = 0; i < size; i++)
                 {
-                    if (_hits[i].collider.gameObject.CompareTag("Player"))
-                    {
-                        var pc = _hits[i].collider.gameObject.GetComponent<PlayerComponent>();
-                        if (pc != null && pc.publicKey == InGameDataStatic.Instance.myPublicKey)
-                            continue;   // 자기 자신은 후보에서 제외
-                    }
+                    // 태그는 콜라이더가 붙은 그 오브젝트 자신에만 있고(예: 캐릭터의 "Bump" 보조 콜라이더 등은
+                    // 태그가 없음), PlayerComponent는 루트에만 있어서 부모까지 찾아야 어느 콜라이더를 맞혀도
+                    // 정확히 잡힘 — 태그만 보면 자기 자신의 보조 콜라이더를 못 걸러서 자기 자신 오인식 가능.
+                    var hitPc = _hits[i].collider.GetComponentInParent<PlayerComponent>();
+                    if (hitPc != null && hitPc.publicKey == InGameDataStatic.Instance.myPublicKey)
+                        continue;   // 자기 자신은 후보에서 제외
 
                     if (_hits[i].distance < bestDistance)
                     {
@@ -72,10 +72,10 @@ namespace Codes.InGame.Player_Ingame
                 }
 
                 var best = _hits[bestIndex];
-                if (best.collider.gameObject.CompareTag("Player"))
+                var bestPc = best.collider.GetComponentInParent<PlayerComponent>();
+                if (bestPc != null)
                 {
-                    var pc = best.collider.gameObject.GetComponent<PlayerComponent>();
-                    EnetClient.Instance.SendHitThisPacket((byte)pc.publicKey, position, dir);
+                    EnetClient.Instance.SendHitThisPacket((byte)bestPc.publicKey, position, dir);
                 }
                 else
                 {
