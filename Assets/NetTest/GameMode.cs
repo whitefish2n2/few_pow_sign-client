@@ -9,6 +9,7 @@ namespace NetTest
         DeathMatch = 0,
         OneVsOne = 1,
         Solo = 2,
-        Custom = -1
+        Custom = -1,
+        FiveVsFive = 3
     }
 }
