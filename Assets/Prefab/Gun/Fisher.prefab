@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8910531849066763286}
   - component: {fileID: 6307656133812119358}
   - component: {fileID: 3041276115279705271}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: clip_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 6612018318571723534}
   - component: {fileID: 6369817545246043955}
   - component: {fileID: 5449473774601098839}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: reflex_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 6474020415113828740}
   - component: {fileID: 502326612853506431}
   - component: {fileID: 225962039618690590}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: gear_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 4666798825050047051}
   - component: {fileID: 7343335954336198473}
   - component: {fileID: 1038972694711346293}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: trigger_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -371,7 +371,7 @@ GameObject:
   - component: {fileID: 4749110463166799470}
   - component: {fileID: 2125536314332696553}
   - component: {fileID: 3188591320198564769}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: charge_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +492,7 @@ GameObject:
   - component: {fileID: 8445101449026562340}
   - component: {fileID: 9155303688658721863}
   - component: {fileID: 4662832948701290663}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: add2_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -582,7 +582,7 @@ GameObject:
   - component: {fileID: 6972830312736746078}
   - component: {fileID: 6956750497132664375}
   - component: {fileID: 4565519917700615298}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: body_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -672,7 +672,7 @@ GameObject:
   - component: {fileID: 9126644963361376935}
   - component: {fileID: 4212565095485307511}
   - component: {fileID: 2400888410738117557}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: plate_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -762,7 +762,7 @@ GameObject:
   - component: {fileID: 5957637203280849563}
   - component: {fileID: 2184083404633005415}
   - component: {fileID: 6400548037477140788}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: stock_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -852,7 +852,7 @@ GameObject:
   - component: {fileID: 2692619139406141382}
   - component: {fileID: 7609946965714850515}
   - component: {fileID: 7468092954460439404}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: hold_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -942,7 +942,7 @@ GameObject:
   - component: {fileID: 3561187318855633378}
   - component: {fileID: 9125316212988776059}
   - component: {fileID: 310035709219644839}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: hip_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1030,7 +1030,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6674842738657171633}
-  - component: {fileID: 2417350883945585013}
   - component: {fileID: 7858316916705185945}
   - component: {fileID: 24151772889098918}
   - component: {fileID: 5520678491990806980}
@@ -1038,7 +1037,8 @@ GameObject:
   - component: {fileID: 7581586876395001739}
   - component: {fileID: 7107234313086769900}
   - component: {fileID: 4128279022422104783}
-  m_Layer: 8
+  - component: {fileID: 4142673519365038810}
+  m_Layer: 10
   m_Name: Fisher
   m_TagString: Interactable
   m_Icon: {fileID: 0}
@@ -1053,9 +1053,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7222821889565179315}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.008726558, z: -0, w: 0.999962}
+  m_LocalRotation: {x: 0, y: 0.008726558, z: 0, w: 0.999962}
   m_LocalPosition: {x: 217.62401, y: 212.45001, z: -46.526302}
-  m_LocalScale: {x: 0.33511367, y: 0.3351134, z: 0.33511367}
+  m_LocalScale: {x: 0.33511373, y: 0.3351134, z: 0.33511373}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2260014836827328760}
@@ -1075,28 +1075,6 @@ Transform:
   - {fileID: 9122326732292423124}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 1, z: 0}
---- !u!64 &2417350883945585013
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7222821889565179315}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: a212cd46813a7d14a915d0cc9f8f324c, type: 2}
 --- !u!95 &7858316916705185945
 Animator:
   serializedVersion: 7
@@ -1261,6 +1239,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Codes.InGame.SynchronizedObject
   objectId: 0
+--- !u!65 &4142673519365038810
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7222821889565179315}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.61801755, y: 2.8113983, z: 7.938964}
+  m_Center: {x: 0, y: -0.2658025, z: 0.73483855}
 --- !u!1 &7480029151725764700
 GameObject:
   m_ObjectHideFlags: 0
@@ -1272,7 +1271,7 @@ GameObject:
   - component: {fileID: 2260014836827328760}
   - component: {fileID: 3772049947654199558}
   - component: {fileID: 4801603677382333158}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: add1_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1362,7 +1361,7 @@ GameObject:
   - component: {fileID: 2399337605845223367}
   - component: {fileID: 6999410164510370270}
   - component: {fileID: 877262966696316536}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: silencer_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1452,7 +1451,7 @@ GameObject:
   - component: {fileID: 931808343953717798}
   - component: {fileID: 4664126290656922218}
   - component: {fileID: 2967179589018865428}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: fromt_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}

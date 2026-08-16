@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 5313007256014211383}
   - component: {fileID: 2088411594672314870}
   - component: {fileID: 1917810048119462713}
-  - component: {fileID: 6908374017326240543}
   - component: {fileID: 1444139021155471714}
-  m_Layer: 8
+  - component: {fileID: 7263478111325638559}
+  - component: {fileID: 6602839640672729792}
+  m_Layer: 10
   m_Name: kcal
   m_TagString: Interactable
   m_Icon: {fileID: 0}
@@ -31,9 +32,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1112358239876087597}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.53605264, y: 0.5225213, z: 0.6064115, w: -0.26811236}
+  m_LocalRotation: {x: 0.5360502, y: 0.52252275, z: 0.6064124, w: -0.2681123}
   m_LocalPosition: {x: 0.44000244, y: -0.36200684, z: 0.7493019}
-  m_LocalScale: {x: 137.0502, y: 137.05014, z: 137.05014}
+  m_LocalScale: {x: 137.05031, y: 137.05023, z: 137.05023}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6680993359394461632}
@@ -67,6 +68,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -88,9 +91,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &5313007256014211383
 MonoBehaviour:
@@ -108,6 +113,9 @@ MonoBehaviour:
   owner: {fileID: 0}
   stat: {fileID: 11400000, guid: f8e541b1b1f849b46accbfad8b0be9fe, type: 2}
   animator: {fileID: 0}
+  bulletTrailPrefab: {fileID: 0}
+  muzzlePoint: {fileID: 0}
+  trailSpeed: 300
   currentAmmo: 0
   isHolding: 0
   isOnInventory: 0
@@ -124,7 +132,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88075628de14de943a66b5a4ce5a3b4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactableId: 0
   onTarget:
     m_PersistentCalls:
       m_Calls: []
@@ -157,8 +164,48 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!64 &6908374017326240543
-MeshCollider:
+--- !u!54 &1444139021155471714
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112358239876087597}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 2
+--- !u!114 &7263478111325638559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112358239876087597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a842f278a13141a080f0ca969bb17b46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Codes.InGame.SynchronizedObject
+  objectId: 0
+--- !u!65 &6602839640672729792
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -175,37 +222,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7233159054065966114, guid: 3d8387d5a561a40478a481c10431d254, type: 3}
---- !u!54 &1444139021155471714
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1112358239876087597}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  serializedVersion: 3
+  m_Size: {x: 0.007276624, y: 0.0021531407, z: 0.0028431993}
+  m_Center: {x: 0.00029151718, y: 0.0000021366711, z: -0.0005879798}
 --- !u!1 &8633138300626315992
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,7 +236,7 @@ GameObject:
   - component: {fileID: 6680993359394461632}
   - component: {fileID: 1314873710900135513}
   - component: {fileID: 1127330058087669716}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: kcal
   m_TagString: Interactable
   m_Icon: {fileID: 0}
@@ -267,6 +286,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -291,7 +312,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
